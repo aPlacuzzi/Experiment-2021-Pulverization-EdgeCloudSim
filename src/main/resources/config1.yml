@@ -1,0 +1,131 @@
+generalConfig:
+  # minutes
+  simulationTime:
+  - 30
+  - 60
+  # minutes
+  warmUpPeriod:
+  - 3
+  vmLoadCheckInterval:
+  - 0.1
+  locationCheckInterval:
+  - 0.1
+  fileLogEnabled: true
+  deepFileLogEnabled: false
+  minNumberOfMobileDevices: 100
+  maxNumberOfMobileDevices: 1000
+  mobileDeviceCounterSize: 100
+  # sec
+  wanPropogationDelay:
+  - 0.15
+  gsmPropogationDelay:
+  - 0.16
+  lanInternalDelay:
+  - 0.01
+  #Mbps
+  wlanBandwidth:
+  - 200
+  wanBandwidth:
+  - 15
+  gsmBandwidth:
+  - 10
+  numberOfHostOnCloudDatacenter:
+  - 1
+  numberOfVmOnCloudHost:
+  - 4
+  coreForCloudVm:
+  - 4
+  mipsForCloudVm:
+  - 1000
+  # Byte
+  ramForCloudVm:
+  - 32000
+  # Byte
+  storageForCloudVm:
+  - 1000000
+  coreForMobileVm:
+  - 1
+  mipsForMobileVm:
+  - 1000
+  # Byte
+  ramForMobileVm:
+  - 1800
+  # Byte
+  storageForMobileVm:
+  - 32000
+  # RANDOM_FIT, FIRST_FIT, NEXT_FIT, WORST_FIT, BEST_FIT, ONLY_EDGE
+  orchestratorPolicies: NEXT_FIT
+  simulationScenarios: SINGLE_TIER,TWO_TIER,TWO_TIER_WITH_EO
+  # sec
+  attractivenessL1MeanWaitingTime:
+  - 480
+  # sec
+  attractivenessL2MeanWaitingTime:
+  - 300
+  # sec
+  attractivenessL3MeanWaitingTime:
+  - 120
+edgesConfig:
+  costPerBw: 0.1
+  costPerSec: 3.0
+  costPerMem: 0.05
+  costPerStorage: 0.1
+  edgeCount: 1
+  edgeCore: 4
+  edgeMips: 20000
+  edgeRam: 16000
+  edgeStorage: 250000
+  edgeVwCount: 4
+  locations:
+  - x: 1
+    y: 1
+    attractiveness: 0 # 0, 1, 2, o 3
+  - x: 2
+    y: 2
+    attractiveness: 1
+inputDeployConfig:
+  deploys:
+  - applications:
+    - name: "app1"
+      usagePercentage: [20.0]
+      probCloudSelection: [20.0, 50.0]
+      poissonInterarrival: [20.0]
+      delaySensitivity: [0.0]
+      activePeriod: [20.0] # sec
+      idlePeriod: [0.0] # sec
+      dataUpload: [2500.0] # KB
+      dataDownload: [250.0] # KB
+      taskLength: [3000.0] #MI
+      requiredCore: [1]
+      vmUtilizationOnEdge: [30.0]
+      vmUtilizationOnCloud: [3.0]
+      vmUtilizationOnMobile: [0.0]
+    - name: "app2"
+      usagePercentage: [ 20.0 ]
+      probCloudSelection: [ 25.0 ]
+      poissonInterarrival: [ 20.0 ]
+      delaySensitivity: [ 0.0 ]
+      activePeriod: [ 20.0 ]
+      idlePeriod: [ 0.0 ]
+      dataUpload: [ 2500.0 ]
+      dataDownload: [ 250.0 ]
+      taskLength: [ 3000.0 ]
+      requiredCore: [ 1 ]
+      vmUtilizationOnEdge: [ 30.0 ]
+      vmUtilizationOnCloud: [ 3.0 ]
+      vmUtilizationOnMobile: [ 0.0 ]
+  - applications:
+    - name: "app1"
+      usagePercentage: [ 20.0 ]
+      probCloudSelection: [ 40.0, 70.0 ]
+      poissonInterarrival: [ 20.0 ]
+      delaySensitivity: [ 0.0 ]
+      activePeriod: [ 20.0 ]
+      idlePeriod: [ 0.0 ]
+      dataUpload: [ 2500.0 ]
+      dataDownload: [ 250.0 ]
+      taskLength: [ 10000.0 ]
+      requiredCore: [ 1 ]
+      vmUtilizationOnEdge: [ 30.0 ]
+      vmUtilizationOnCloud: [ 3.0 ]
+      vmUtilizationOnMobile: [ 0.0 ]
