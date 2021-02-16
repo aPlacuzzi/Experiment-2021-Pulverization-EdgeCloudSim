@@ -2,7 +2,6 @@ generalConfig:
   # minutes
   simulationTime:
   - 30
-  - 60
   # minutes
   warmUpPeriod:
   - 3
@@ -13,8 +12,8 @@ generalConfig:
   fileLogEnabled: true
   deepFileLogEnabled: false
   minNumberOfMobileDevices: 100
-  maxNumberOfMobileDevices: 1000
-  mobileDeviceCounterSize: 100
+  maxNumberOfMobileDevices: 1100
+  mobileDeviceCounterSize: 250
   # sec
   wanPropogationDelay:
   - 0.15
@@ -84,48 +83,30 @@ edgesConfig:
     y: 2
     attractiveness: 1
 inputDeployConfig:
-  deploys:
-  - applications:
-    - name: "app1"
-      usagePercentage: [20.0]
-      probCloudSelection: [20.0, 50.0]
-      poissonInterarrival: [20.0]
-      delaySensitivity: [0.0]
-      activePeriod: [20.0] # sec
-      idlePeriod: [0.0] # sec
-      dataUpload: [2500.0] # KB
-      dataDownload: [250.0] # KB
-      taskLength: [3000.0] #MI
-      requiredCore: [1]
-      vmUtilizationOnEdge: [30.0]
-      vmUtilizationOnCloud: [3.0]
-      vmUtilizationOnMobile: [0.0]
-    - name: "app2"
-      usagePercentage: [ 20.0 ]
-      probCloudSelection: [ 25.0 ]
-      poissonInterarrival: [ 20.0 ]
-      delaySensitivity: [ 0.0 ]
-      activePeriod: [ 20.0 ]
-      idlePeriod: [ 0.0 ]
-      dataUpload: [ 2500.0 ]
-      dataDownload: [ 250.0 ]
-      taskLength: [ 3000.0 ]
-      requiredCore: [ 1 ]
-      vmUtilizationOnEdge: [ 30.0 ]
-      vmUtilizationOnCloud: [ 3.0 ]
-      vmUtilizationOnMobile: [ 0.0 ]
-  - applications:
-    - name: "app1"
-      usagePercentage: [ 20.0 ]
-      probCloudSelection: [ 40.0, 70.0 ]
-      poissonInterarrival: [ 20.0 ]
-      delaySensitivity: [ 0.0 ]
-      activePeriod: [ 20.0 ]
-      idlePeriod: [ 0.0 ]
-      dataUpload: [ 2500.0 ]
-      dataDownload: [ 250.0 ]
-      taskLength: [ 10000.0 ]
-      requiredCore: [ 1 ]
-      vmUtilizationOnEdge: [ 30.0 ]
-      vmUtilizationOnCloud: [ 3.0 ]
-      vmUtilizationOnMobile: [ 0.0 ]
+  sensingUploadData: 0.5
+  actuatorDownloadData: 1.0
+  behaviour:
+    name: "behaviour"
+    usagePercentage: [20.0]
+    probCloudSelection: [20.0, 50.0]
+    poissonInterarrival: [20.0]
+    delaySensitivity: [0.0]
+    activePeriod: [20.0] # sec
+    idlePeriod: [0.0] # sec
+    requiredCore: [1]
+    vmUtilizationOnEdge: [30.0]
+    vmUtilizationOnCloud: [3.0]
+    vmUtilizationOnMobile: [0.0]
+  communication:
+    name: "communication"
+    usagePercentage: [ 20.0 ]
+    probCloudSelection: [ 0.0, 25.0, 100.0 ]
+    poissonInterarrival: [ 20.0 ]
+    delaySensitivity: [ 0.0 ]
+    activePeriod: [ 20.0 ]
+    idlePeriod: [ 0.0 ]
+    taskLength: [ 15.0 ]
+    requiredCore: [ 1 ]
+    vmUtilizationOnEdge: [ 30.0 ]
+    vmUtilizationOnCloud: [ 3.0 ]
+    vmUtilizationOnMobile: [ 0.0 ]
