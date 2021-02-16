@@ -3,3 +3,6 @@ build/
 *.java
 out/
 .gradle/
+*.xml
+*.properties
+*.csv
