@@ -86,7 +86,6 @@ object ConfigGenerator {
             it.writeText(outputEdgeConfigs.toXml())
         }
 
-        var count = -1
         var onlyCount = 0
         var withCount = 0
         var andCount = 0
