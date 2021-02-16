@@ -87,7 +87,7 @@ inputDeployConfig:
   actuatorDownloadData: 1.0
   behaviour:
     name: "behaviour"
-    usagePercentage: [20.0]
+    usagePercentage: [50.0]
     probCloudSelection: [20.0, 50.0]
     poissonInterarrival: [20.0]
     delaySensitivity: [0.0]
@@ -99,7 +99,7 @@ inputDeployConfig:
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
-    usagePercentage: [ 20.0 ]
+    usagePercentage: [ 50.0 ]
     probCloudSelection: [ 0.0, 25.0, 100.0 ]
     poissonInterarrival: [ 20.0 ]
     delaySensitivity: [ 0.0 ]
