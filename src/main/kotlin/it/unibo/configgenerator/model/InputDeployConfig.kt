@@ -2,13 +2,15 @@ package it.unibo.configgenerator.model
 
 import com.uchuhimo.konf.ConfigSpec
 
-data class InputDeployConfig(val deploys: List<InputDeploy> = listOf(InputDeploy())) {
+data class InputDeployConfig(
+    val sensingUploadData: Double = 0.0,
+    val actuatorDownloadData: Double = 0.0,
+    val behaviour: InputApplication = InputApplication("behaviour"),
+    val communication: InputApplication = InputApplication("communication")) {
     companion object: ConfigSpec("") {
         val inputDeployConfig by required<InputDeployConfig>()
     }
 }
-
-data class InputDeploy(val applications: List<InputApplication> = listOf(InputApplication()))
 
 data class InputApplication(
     val name: String = "empty",

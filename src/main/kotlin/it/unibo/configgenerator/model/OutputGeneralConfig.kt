@@ -1,7 +1,6 @@
 package it.unibo.configgenerator.model
 
 import com.google.common.collect.Lists
-import com.uchuhimo.konf.ConfigSpec
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -47,9 +46,7 @@ data class OutputGeneralConfig(
     val attractiveness_L2_mean_waiting_time: Int,
     val attractiveness_L3_mean_waiting_time: Int,
         ){
-    companion object :ConfigSpec("") {
-        val outputGeneralConfig by required<OutputGeneralConfig>()
-
+    companion object {
         fun fromInputModel(inputGeneralConfig: InputGeneralConfig): List<OutputGeneralConfig> {
             val list = listOf(
                 inputGeneralConfig.simulationTime,
@@ -112,4 +109,14 @@ data class OutputGeneralConfig(
             }
         }
     }
+
+    fun singularizeDeviceCount() =
+        IntRange(0, (max_number_of_mobile_devices - min_number_of_mobile_devices) / mobile_device_counter_size)
+            .map { index -> copyWithDeviceCount(min_number_of_mobile_devices + index * mobile_device_counter_size) }
+
+    private fun copyWithDeviceCount(deviceCount: Int): OutputGeneralConfig = this.copy(
+        min_number_of_mobile_devices = deviceCount,
+        max_number_of_mobile_devices = deviceCount,
+        mobile_device_counter_size = 1,
+    )
 }

@@ -1,14 +1,62 @@
 package it.unibo.configgenerator.model
 
 import com.google.common.collect.Lists
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 data class OutputDeployConfig(val deploy: List<Application>) {
     companion object {
-        fun fromInputConfig(inputDeployConfig: InputDeployConfig): List<OutputDeployConfig> =
-            inputDeployConfig.deploys.map { inputDeploy ->
-                Lists.cartesianProduct(inputDeploy.applications.map { allApplication(it) })
-                    .map { OutputDeployConfig(it) }
-            }.flatten()
+        fun onlyCommunication(
+            inputDeployConfig: InputDeployConfig,
+            deviceCount: Int,
+            apCount: Int,
+            messageSize: Double) = allApplication(inputDeployConfig.communication.copy(dataUpload = listOf(0.0), dataDownload = listOf(0.0)))
+                .map {
+                    val pc = it.prob_cloud_selection / 100.0
+                    val pe = 1 - pc
+                    val neigh = deviceCount / apCount
+                    val dataDownload = (pc * messageSize * pe * neigh) + (pe * (messageSize * (pc * neigh + pe * neigh * (apCount - 1) / apCount)))
+                    val dataUpload = if (pc == 1.0) 0.0 else messageSize
+                    return@map it.copy(data_download = dataDownload, data_upload = dataUpload)
+                }
+                .map { it.copy(
+                    data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData,
+                    data_download = it.data_download + inputDeployConfig.sensingUploadData
+                ) }
+                .map { OutputDeployConfig(listOf(it)) }
+
+        fun behaviourWithCommunication(
+            inputDeployConfig: InputDeployConfig,
+            deviceCount: Int,
+            apCount: Int,
+            mips: Double,
+            messageSize: Double
+        ) = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize)
+            .map { OutputDeployConfig(listOf(it.deploy[0].copy(
+                name = "behaviour with communication",
+                task_length = it.deploy[0].task_length + mips)))
+            }
+
+        fun behaviourAndCommunication(
+            inputDeployConfig: InputDeployConfig,
+            deviceCount: Int,
+            apCount: Int,
+            mips: Double,
+            messageSize: Double
+        ): List<OutputDeployConfig> {
+            val commToBehaUpload = messageSize * (deviceCount / apCount)
+            val commToBehaDownload = messageSize
+            val communications = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize)
+                .map { it.deploy[0].copy(
+                    data_upload = it.deploy[0].data_upload + commToBehaUpload,
+                    data_download = it.deploy[0].data_download + commToBehaDownload)
+                }
+            val behaviour = allApplication(inputDeployConfig.behaviour.copy(
+                taskLength = listOf(mips),
+                dataUpload = listOf(commToBehaDownload),
+                dataDownload = listOf(commToBehaUpload)))
+            return Lists.cartesianProduct(behaviour, communications).map { OutputDeployConfig(listOf(it[0], it[1])) }
+        }
 
         private fun allApplication(inputApplication: InputApplication): List<Application> {
             val params = listOf(
@@ -78,9 +126,9 @@ data class Application(
         "$indent\t<delay_sensitivity>$delay_sensitivity</delay_sensitivity>\n" +
         "$indent\t<active_period>$active_period</active_period>\n" +
         "$indent\t<idle_period>$idle_period</idle_period>\n" +
-        "$indent\t<data_upload>$data_upload</data_upload>\n" +
-        "$indent\t<data_download>$data_download</data_download>\n" +
-        "$indent\t<task_length>$task_length</task_length>\n" +
+        "$indent\t<data_upload>${BigDecimal(data_upload).setScale(3, RoundingMode.CEILING)}</data_upload>\n" +
+        "$indent\t<data_download>${BigDecimal(data_download).setScale(3, RoundingMode.CEILING)}</data_download>\n" +
+        "$indent\t<task_length>${BigDecimal(task_length).setScale(3, RoundingMode.CEILING)}</task_length>\n" +
         "$indent\t<required_core>$required_core</required_core>\n" +
         "$indent\t<vm_utilization_on_edge>$vm_utilization_on_edge</vm_utilization_on_edge>\n" +
         "$indent\t<vm_utilization_on_cloud>$vm_utilization_on_cloud</vm_utilization_on_cloud>\n" +
