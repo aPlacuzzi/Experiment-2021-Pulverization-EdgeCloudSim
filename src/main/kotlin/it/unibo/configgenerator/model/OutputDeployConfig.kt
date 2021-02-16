@@ -46,16 +46,25 @@ data class OutputDeployConfig(val deploy: List<Application>) {
         ): List<OutputDeployConfig> {
             val commToBehaUpload = messageSize * (deviceCount / apCount)
             val commToBehaDownload = messageSize
-            val communications = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize)
-                .map { it.deploy[0].copy(
-                    data_upload = it.deploy[0].data_upload + commToBehaUpload,
-                    data_download = it.deploy[0].data_download + commToBehaDownload)
-                }
+            val communications = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize).map { it.deploy[0] }
             val behaviour = allApplication(inputDeployConfig.behaviour.copy(
                 taskLength = listOf(mips),
-                dataUpload = listOf(commToBehaDownload),
-                dataDownload = listOf(commToBehaUpload)))
-            return Lists.cartesianProduct(behaviour, communications).map { OutputDeployConfig(listOf(it[0], it[1])) }
+                dataUpload = listOf(0.0),
+                dataDownload = listOf(0.0)))
+            return Lists.cartesianProduct(behaviour, communications).map {
+                val pcComm = it[1].prob_cloud_selection / 100.0
+                val peCommK = (1 - pcComm) / apCount
+                val pcBeha = it[0].prob_cloud_selection / 100.0
+                val peBehaK = (1 - pcBeha) / apCount
+                val pDifferentHost = 1 - (pcComm * pcBeha + apCount * peCommK * peBehaK)
+                val commApp = it[1].copy(
+                    data_upload = it[1].data_upload + commToBehaUpload * pDifferentHost,
+                    data_download = it[1].data_download + commToBehaDownload * pDifferentHost)
+                val behaApp = it[0].copy(
+                    data_upload = commToBehaDownload * pDifferentHost,
+                    data_download = commToBehaUpload * pDifferentHost)
+                return@map OutputDeployConfig(listOf(behaApp, commApp))
+            }
         }
 
         private fun allApplication(inputApplication: InputApplication): List<Application> {
