@@ -8,10 +8,12 @@ import kotlinx.serialization.properties.encodeToMap
 import java.io.File
 
 object ConfigGenerator {
-    fun generateConfig(inputFile: File, protelisMips: Double, messageSize: Double) {
-        val generalConfigDir = File(inputFile.parent, "generalConfig").also { it.mkdir() }
-        val edgeDir = File(inputFile.parent, "edgeConfig").also { it.mkdir() }
-        val deploysDir = File(inputFile.parent, "deploysConfig").also { it.mkdir() }
+    fun generateConfig(inputFile: File, outputDirPath: String, protelisMips: Double, messageSize: Double) {
+        val outputDir = File(outputDirPath).also { it.mkdir() }
+        val generalConfigDir = File(outputDir, "generalConfig").also { it.mkdir() }
+        val edgeDir = File(outputDir, "edgeConfig").also { it.mkdir() }
+        val deploysDir = File(outputDir, "deploysConfig").also { it.mkdir() }
+        val resultDir = File(outputDir, "results").also { it.mkdir() }
 
         val inputConfig = Config {
             addSpec(InputGeneralConfig)
@@ -97,23 +99,26 @@ object ConfigGenerator {
             }
             .groupBy ({ it.first }, { it.second })
             .flatMap { entry ->
-                var outputDir = ""
+                var configResultDir = ""
                 if (entry.value[0].second.startsWith(onlyCommunicationDeployKey)){
-                    outputDir = "$onlyCommunicationDeployKey${onlyCount++}"
+                    configResultDir = "$onlyCommunicationDeployKey${onlyCount++}"
                 }
                 if (entry.value[0].second.startsWith(behaviourWithCommunicationDeployKey)){
-                    outputDir = "$behaviourWithCommunicationDeployKey${withCount++}"
+                    configResultDir = "$behaviourWithCommunicationDeployKey${withCount++}"
                 }
                 if (entry.value[0].second.startsWith(behaviourAndCommunicationDeployKey)){
-                    outputDir = "$behaviourAndCommunicationDeployKey${andCount++}"
+                    configResultDir = "$behaviourAndCommunicationDeployKey${andCount++}"
                 }
-                return@flatMap entry.value.map { "$outputDir;${it.first};$edgeFileName;${it.second}" }
+                return@flatMap entry.value.map { "${File(resultDir, configResultDir).relativeTo(outputDir)}," +
+                        "${File(generalConfigDir, it.first).relativeTo(outputDir)}," +
+                        "${File(edgeDir, edgeFileName).relativeTo(outputDir)}," +
+                        "${File(deploysDir, it.second).relativeTo(outputDir)}" }
             }
             .reduce { s1, s2 -> "$s1\n$s2" }
 
 
-        val header = "# output folder; general config; edge config; application config"
-        File(inputFile.parent, "simulations.csv").also {
+        val header = "# output folder, general config, edge config, application config"
+        File(outputDir, "simulations.csv").also {
             it.createNewFile()
             it.writeText("$header\n$simulations")
         }

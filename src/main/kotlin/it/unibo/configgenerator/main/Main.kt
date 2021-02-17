@@ -6,5 +6,5 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val (mips, msgSize) = ProtelisComplexity.estimateProtelisComplexity("nbr(2)")
-    ConfigGenerator.generateConfig(File(args[0]), mips, msgSize)
+    ConfigGenerator.generateConfig(File(args[0]), args[1], mips, msgSize)
 }
