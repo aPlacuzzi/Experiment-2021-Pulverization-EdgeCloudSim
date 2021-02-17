@@ -87,26 +87,20 @@ inputDeployConfig:
   actuatorDownloadData: 1.0
   behaviour:
     name: "behaviour"
-    usagePercentage: [50.0]
     probCloudSelection: [20.0, 50.0]
     poissonInterarrival: [20.0]
-    delaySensitivity: [0.0]
     activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
-    requiredCore: [1]
     vmUtilizationOnEdge: [30.0]
     vmUtilizationOnCloud: [3.0]
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
-    usagePercentage: [ 50.0 ]
     probCloudSelection: [ 0.0, 25.0, 100.0 ]
     poissonInterarrival: [ 20.0 ]
-    delaySensitivity: [ 0.0 ]
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
     taskLength: [ 15.0 ]
-    requiredCore: [ 1 ]
     vmUtilizationOnEdge: [ 30.0 ]
     vmUtilizationOnCloud: [ 3.0 ]
     vmUtilizationOnMobile: [ 0.0 ]
