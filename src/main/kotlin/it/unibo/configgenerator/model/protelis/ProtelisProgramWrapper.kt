@@ -35,8 +35,5 @@ data class ProtelisProgramWrapper(private val protelisProgram: ProtelisProgram):
             else -> emptySequence()
         }
 
-    private fun mipsByInstruction(ast: ProtelisAST<*>): Double = when (ast) {
-        is Constant<*>, is JvmConstant, is Env, is Self, is FunctionCall -> 1.0
-        else -> 50.0
-    }
+    private fun mipsByInstruction(ast: ProtelisAST<*>): Double = 1.0
 }
