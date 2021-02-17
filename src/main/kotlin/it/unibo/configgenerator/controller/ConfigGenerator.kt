@@ -75,7 +75,7 @@ object ConfigGenerator {
                 val fileName = "generalConfig${deviceCount}_$index.properties"
                 File(generalConfigDir, fileName).also { file ->
                     file.createNewFile()
-                    file.writeText(Properties.encodeToMap(element).map { (k, v) -> "$k = $v" }.reduce{ s1, s2 -> "$s1\n$s2"})
+                    file.writeText(Properties.encodeToMap(it).map { (k, v) -> "$k = $v" }.reduce{ s1, s2 -> "$s1\n$s2"})
                 }
                 configFileNames += applicationByDeviceCount[deviceCount]!!.first.map { deployFile -> Pair(fileName, deployFile) }
                 configFileNames += applicationByDeviceCount[deviceCount]!!.second.map { deployFile -> Pair(fileName, deployFile) }
