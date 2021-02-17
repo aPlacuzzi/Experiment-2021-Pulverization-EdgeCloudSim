@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.concurrent.CompletableFuture
+import java.io.File.separator
 
 plugins {
     kotlin("jvm") version "1.4.10"
@@ -32,4 +34,91 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+val outputDir = File(projectDir, "output")
+val resourcesDir = "${projectDir.absolutePath}${separator}src${separator}main${separator}resources"
+val configFile = File(resourcesDir, "config1.yml")
+val protelisProgram = "sgcg:sgcg"
+
+tasks.register<JavaExec>("createConfigFiles") {
+    dependsOn("build")
+
+    if (outputDir.exists() && outputDir.isDirectory) {
+        outputDir.deleteRecursively()
+    }
+    outputDir.mkdir()
+
+    main = "it.unibo.configgenerator.main.Main"
+    args(configFile.absolutePath, outputDir.absolutePath, protelisProgram)
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
+class Job(
+    private val runtime: Runtime,
+    private val listOfFiles: ListOfFiles,
+    private val jarPath: String
+) : Thread() {
+    val future: CompletableFuture<Int> = CompletableFuture()
+    private var stop = false
+    override fun run() {
+        while (!stop) {
+            val file = listOfFiles.getNextFile()
+            if (file == null) {
+                stop = true
+            } else {
+                runtime.exec(getCmd(file)).onExit().get()
+            }
+        }
+        future.complete(0)
+    }
+    private fun getCmd(config: Config) =
+        "java -jar $jarPath ${config.generalConfig} ${config.edgeConfig} ${config.deployConfig} ${config.resultDir} 1"
+}
+
+data class Config(val resultDir: String, val generalConfig: String, val edgeConfig: String, val deployConfig: String)
+
+class ListOfFiles(csvFile: File) {
+    val files = csvFile.bufferedReader(Charsets.UTF_8)
+        .lineSequence()
+        .drop(1)
+        .map { it.split(",") }
+        .map { Config(
+            resultDir = createResultDirIfAbsent(File(outputDir, it[0])),
+            generalConfig = File(outputDir, it[1]).absolutePath,
+            edgeConfig = File(outputDir, it[2]).absolutePath,
+            deployConfig = File(outputDir, it[3]).absolutePath
+        ) }
+        .toMutableList()
+
+    private fun createResultDirIfAbsent(file :File): String {
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        return file.absolutePath
+    }
+
+    fun getNextFile(): Config? {
+        synchronized(this) {
+            return if (files.isNotEmpty()) {
+                files.removeAt(0)
+            } else {
+                null
+            }
+        }
+    }
+}
+
+tasks.register<DefaultTask>("batch") {
+    dependsOn("build")
+    val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
+    doLast {
+        val runtime = Runtime.getRuntime()
+        val files = ListOfFiles(outputDir.listFiles().first { it.extension == "csv" })
+        val jobs = (0 until runtime.availableProcessors() - 2)
+            .map { Job(runtime, files, jarPath) }
+            .map { Pair(it, it.future) }
+        jobs.forEach { it.first.start() }
+        jobs.forEach { it.second.get() }
+    }
 }
