@@ -1,0 +1,23 @@
+module sgcg:election
+import java.lang.System.out
+
+def minChain(myid) =
+    share (chain, neighborChain <- [myid]) {
+//        let chains = unionHood(nbr([chain]));
+        let neighborhood = foldUnion([nbr(myid)])
+//        out.println("neighborhood " + neighborhood)
+        let chains = foldUnion([neighborChain]).filter {
+            !it.contains(myid) // prevent loops containing myself
+            && it.intersection(neighborhood).size() == 1 // only a single neighbor
+        }
+        let candidate = chains.min([]);
+        if (candidate.isEmpty()) { [myid] } else {
+            if (candidate.head() < myid) {
+                candidate.append(myid)
+            } else {
+                [myid]
+            }
+        }
+    }
+
+public def singleLeader(myid) = minChain(myid).head()

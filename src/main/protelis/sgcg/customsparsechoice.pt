@@ -1,0 +1,69 @@
+module sgcg:customsparsechoice
+import protelis:coord:spreading
+import GroupBy.*
+
+public def breakUsingUids(preference, uid, grain, metric, default) =
+	share (lead, nbrLead <- [preference, uid]) {
+//		env.put("lead", lead)
+//		env.putField("nbrLead", nbrLead)
+//		let distanceToLeader = distanceToWithMetric(uid.get(1) == lead.get(1), metric)
+		let distanceToLeader = G(uid == lead.get(1), [0, uid], metric) {
+			[it.get(0) + metric(), it.get(1)]
+		}
+//		env.put("distanceToLeader", distanceToLeader)
+//        distanceCompetition(distanceToLeader, nbrLead, uid, grain, default)
+		let d = distanceToLeader.get(0)
+		let myleader = distanceToLeader.get(1)
+//		env.putField("border", nbr(distanceToLeader))
+		let myCandidature = [preference, uid]
+//		env.put("myCandidature", myCandidature)
+		// Only neighbors within grain are considered
+		let validCandidate = metric() <= grain
+		let neighborCandidate = mux (validCandidate) { nbr(myCandidature) } else { myCandidature }
+//		env.putField("neighborCandidate", neighborCandidate)
+		let myNeighbors = foldUnion(nbr([uid]))
+//		env.put("myNeighbors", myNeighbors)
+		let remoteCandidate = mux(nbr(d) + metric() > grain || myNeighbors.contains(nbrLead.get(1)))
+			{ neighborCandidate } else { nbrLead }
+//		env.putField("remoteCandidate", remoteCandidate)
+		foldMax(myCandidature, remoteCandidate)
+    }.get(1)
+
+public def election(preference, uid, grain, metric) {
+	let time = self.getCurrentTime()
+	share (lead, nbrLead <- [preference, uid, 0, time]) {
+//		env.put("lead", lead)
+		let lastUpdate = foldMax(0, nbrLead.get(3))
+//		env.put("lastUpdate", lastUpdate)
+//		env.putField("nbrLead", nbrLead)
+		let myCandidate = [preference, uid, 0, time]
+//		env.put("myCandidate", myCandidate)
+		let withDistance = nbrLead.set(2, nbrLead.get(2) + metric())
+//		env.putField("withDistance", withDistance)
+		let updated = updateKeyBy(0, 1, 3, withDistance)
+//		env.putField("updated", updated)
+		let filtered =
+			mux(withDistance.get(2) < grain // condition on space
+				&& withDistance.get(3) > lastUpdate - 5 * self.getDeltaTime() // condition on time (recent update)
+			) {
+				updated
+			} else {
+				myCandidate
+			}
+//		env.putField("filtered", filtered)
+		foldMax(myCandidate, filtered)
+	}.get(1)
+}
+
+/**
+ * Devices compete against one another to become local leaders,
+ * resulting  in  a  random  Voronoi  partition  with  a  characteristic
+ * grain size.
+ *
+ * @param grain  num, partition dimension
+ * @param metric () -> num, estimate distance from the leader
+ * @return       bool, true if the current device is the leader, false otherwise
+ */
+public def customSparseChoice(currentCapacity, maxCapacity, tieBreaker, grain, metric) =
+//    breakUsingUids([currentCapacity, maxCapacity], tieBreaker, grain, metric, [0, 0])
+    election([currentCapacity, maxCapacity], tieBreaker, grain, metric)

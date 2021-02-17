@@ -1,0 +1,116 @@
+module sgcg:sgcg
+
+//import protelis:coord:sparsechoice
+import sgcg:customsparsechoice
+import protelis:coord:accumulation
+import protelis:coord:spreading
+import protelis:lang:utils
+import protelis:state:time
+import protelis:coord:meta:timereplication
+import protelis:coord:nonselfstabilizing:accumulation
+import sgcg:election
+import TaskManager.*
+import Assertions.*
+
+public def fastG(source, sourceLevel, initial, metric, accumulate) {
+	let default = [POSITIVE_INFINITY, initial]
+    share (distanceValue <- default) {
+        mux (source) {
+            // If the device is a source then G return a 0 potential
+            // and the initial value
+            [sourceLevel, initial]
+        } else {
+            // The other device potentials are requested
+            // G returns the value related to the minimum potential
+           foldMin(default, [
+                // potential estimation
+                distanceValue.get(0) + metric(),
+                // values estimation
+                accumulate(distanceValue.get(1))
+            ]);
+        }
+    }.get(1) // return the accumulated value
+}
+
+public def nbrRangeDelta() = self.nbrRange() + 0.1
+
+def debug(name, value) = optionally(env.get("debug"))
+	.filter { it }
+	.map { env.put(name, value) }
+
+def debugField(name, value) = optionally(env.get("debug"))
+	.filter { it }
+	.map { env.putField(name, value) }
+
+
+// Constants
+let myid = self.getDeviceUID().getUID()
+let networkCost = 0.01
+
+// Local computational capacity status: maximum, current, and smoothed current
+let freeCapacity = freeMips()
+env.put("freeCapacity", freeCapacity)
+let maxCapacity = rep (maxEver <- freeCapacity) { max(maxEver, freeCapacity) }
+env.put("maxCapacity", maxCapacity)
+let capacity = exponentialBackoffFilter(freeCapacity, 0.1)
+env.put("capacity", capacity)
+
+// COMMENTED OUT: OVERLY-COMPLICATED METRIC
+//let sink = singleLeader(myid)
+//env.put("singleLeader", sink)
+//let isSink = sink == myid
+//let minMaxCapacity = cossip(isSink, [capacity, capacity]) { a, b ->
+//	[ min(a.get(0), b.get(0)), max(a.get(1), b.get(1)) ]
+//}
+//env.put("minMaxCapacity", minMaxCapacity)
+//let minCapacity = min(capacity, minMaxCapacity.get(0))
+//env.put("minCapacity", minCapacity)
+//let maxCapacity = max(capacity, minMaxCapacity.get(1))
+//env.put("maxCapacity", maxCapacity)
+//let normalizedCapacity = if (maxCapacity == minCapacity) { 1 } else { (capacity - minCapacity) / (maxCapacity - minCapacity) }
+//let metric = mux (nbr(myid) == myid) { 0 } else { (normalizedCapacity + nbr(normalizedCapacity)) / 2 + networkCost }
+//metricIsConsistent(metric)
+//env.put("normalizedCapacity", normalizedCapacity)
+
+// Distance between nodes changes with available computational power
+let metric = mux (nbr(myid) == myid) { 0 } else { min(capacity, nbr(capacity)) + networkCost }
+debugField("metric", metric)
+update(self.getDeltaTime() * 100)
+
+// Tasks successfully completed on this network node
+let locallyCompleted = completedTasks()
+debug("locallyCompleted", locallyCompleted)
+let locallyCompletedTasks = locallyCompleted.map { it.getTask() }
+
+// Tasks successfully completed on the whole network (downstream)
+let completed = timeReplicatedWithK({ gossip(locallyCompletedTasks, union) }, locallyCompletedTasks, 10, 2)
+debug("completed", completed)
+
+// Compute how many tasks have been solved locally
+let previouslyWaiting = waitingTasks()
+debug("previouslyWaiting", previouslyWaiting)
+let justCompleted = previouslyWaiting.intersection(completed)
+debug("justCompleted", justCompleted)
+// Overall count of completed tasks
+env.put("done", optionally(env.get("done")).orElse(0) + justCompleted.size())
+// Waiting tasks generated here
+let waiting = previouslyWaiting.subtract(justCompleted)
+env.put("waiting", waiting.size())
+cleanupCompletedTasks(justCompleted)
+
+// Domain separatation
+let leader = customSparseChoice(capacity, maxCapacity, myid, 200) { metric }
+env.put("leader", leader)
+let isLeader = leader == myid
+env.put("isLeader", isLeader)
+// (computational) distance from leader
+let potential = distanceToWithMetric(isLeader) { metric }
+debug("assertion: non-negative potential", nonNegative(potential))
+debug("potential", potential)
+// Get tasks currently running here
+let executing = runningTasks()
+debug("executing", allocationInfo())
+// Aggregate requests towards the leader (upstream)
+let receivedTasks = C(potential, { a, b -> a.union(b).subtract(executing).subtract(completed) }, waiting, [])
+debug("receivedTasks", receivedTasks)
+if (isLeader) { receivedTasks } else { [] }
