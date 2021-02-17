@@ -1,3 +1,4 @@
+@file:JvmName("Main")
 package it.unibo.configgenerator.main
 
 import it.unibo.configgenerator.controller.ConfigGenerator
