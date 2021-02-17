@@ -10,7 +10,8 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             inputDeployConfig: InputDeployConfig,
             deviceCount: Int,
             apCount: Int,
-            messageSize: Double) = allApplication(inputDeployConfig.communication.copy(dataUpload = listOf(0.0), dataDownload = listOf(0.0)))
+            messageSize: Double) = allApplication(inputDeployConfig.communication.copy(
+                usagePercentage = listOf(100.0), dataUpload = listOf(0.0), dataDownload = listOf(0.0)))
                 .map {
                     val pc = it.prob_cloud_selection / 100.0
                     val pe = 1 - pc
@@ -48,6 +49,7 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             val commToBehaDownload = messageSize
             val communications = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize).map { it.deploy[0] }
             val behaviour = allApplication(inputDeployConfig.behaviour.copy(
+                usagePercentage = listOf(50.0),
                 taskLength = listOf(mips),
                 dataUpload = listOf(0.0),
                 dataDownload = listOf(0.0)))
@@ -58,6 +60,7 @@ data class OutputDeployConfig(val deploy: List<Application>) {
                 val peBehaK = (1 - pcBeha) / apCount
                 val pDifferentHost = 1 - (pcComm * pcBeha + apCount * peCommK * peBehaK)
                 val commApp = it[1].copy(
+                    usage_percentage = 50.0,
                     data_upload = it[1].data_upload + commToBehaUpload * pDifferentHost,
                     data_download = it[1].data_download + commToBehaDownload * pDifferentHost)
                 val behaApp = it[0].copy(
