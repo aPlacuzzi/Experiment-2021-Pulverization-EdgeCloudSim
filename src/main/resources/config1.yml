@@ -31,14 +31,14 @@ generalConfig:
   numberOfHostOnCloudDatacenter:
   - 1
   numberOfVmOnCloudHost:
-  - 4
+  - 1
   coreForCloudVm:
-  - 4
+  - 128
   mipsForCloudVm:
-  - 1000
+  - 120000
   # Byte
   ramForCloudVm:
-  - 32000
+  - 128000
   # Byte
   storageForCloudVm:
   - 1000000
@@ -57,24 +57,24 @@ generalConfig:
   simulationScenarios: SINGLE_TIER,TWO_TIER,TWO_TIER_WITH_EO
   # sec
   attractivenessL1MeanWaitingTime:
-  - 480
+  - 600
   # sec
   attractivenessL2MeanWaitingTime:
-  - 300
+  - 120
   # sec
   attractivenessL3MeanWaitingTime:
-  - 120
+  - 60
 edgesConfig:
   costPerBw: 0.1
   costPerSec: 3.0
   costPerMem: 0.05
   costPerStorage: 0.1
   edgeCount: 1
-  edgeCore: 4
-  edgeMips: 20000
+  edgeCore: 16
+  edgeMips: 12000
   edgeRam: 16000
   edgeStorage: 250000
-  edgeVwCount: 4
+  edgeVwCount: 1
   locations:
   - x: 1
     y: 1
