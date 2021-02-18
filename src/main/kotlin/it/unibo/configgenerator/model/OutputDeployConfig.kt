@@ -10,19 +10,10 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             inputDeployConfig: InputDeployConfig,
             deviceCount: Int,
             apCount: Int,
-            messageSize: Double) = allApplication(inputDeployConfig.communication.copy(
-                usagePercentage = listOf(100.0), dataUpload = listOf(0.0), dataDownload = listOf(0.0)))
-                .map {
-                    val pc = it.prob_cloud_selection / 100.0
-                    val pe = 1 - pc
-                    val neigh = deviceCount / apCount
-                    val dataDownload = (pc * messageSize * pe * neigh) + (pe * (messageSize * (pc * neigh + pe * neigh * (apCount - 1) / apCount)))
-                    val dataUpload = if (pc == 1.0) 0.0 else messageSize
-                    return@map it.copy(data_download = dataDownload, data_upload = dataUpload)
-                }
+            messageSize: Double) = communication(inputDeployConfig, deviceCount, apCount, messageSize)
                 .map { it.copy(
-                    data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData,
-                    data_download = it.data_download + inputDeployConfig.sensingUploadData
+                    data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData + messageSize * ((deviceCount * 1.0) / apCount),
+                    data_download = it.data_download + inputDeployConfig.sensingUploadData + messageSize
                 ) }
                 .map { OutputDeployConfig(listOf(it)) }
 
@@ -32,11 +23,9 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             apCount: Int,
             mips: Double,
             messageSize: Double
-        ) = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize)
-            .map { OutputDeployConfig(listOf(it.deploy[0].copy(
-                name = "behaviour with communication",
-                task_length = it.deploy[0].task_length + mips)))
-            }
+        ) = communication(inputDeployConfig, deviceCount, apCount, messageSize)
+            .map { it.copy(task_length = it.task_length + mips)}
+            .map { OutputDeployConfig(listOf(it)) }
 
         fun behaviourAndCommunication(
             inputDeployConfig: InputDeployConfig,
@@ -47,7 +36,7 @@ data class OutputDeployConfig(val deploy: List<Application>) {
         ): List<OutputDeployConfig> {
             val commToBehaUpload = messageSize * (deviceCount / apCount)
             val commToBehaDownload = messageSize
-            val communications = onlyCommunication(inputDeployConfig, deviceCount, apCount, messageSize).map { it.deploy[0] }
+            val communications = communication(inputDeployConfig, deviceCount, apCount, messageSize)
             val behaviour = allApplication(inputDeployConfig.behaviour.copy(
                 usagePercentage = listOf(50.0),
                 taskLength = listOf(mips),
@@ -69,6 +58,26 @@ data class OutputDeployConfig(val deploy: List<Application>) {
                 return@map OutputDeployConfig(listOf(behaApp, commApp))
             }
         }
+
+        private fun communication(
+            inputDeployConfig: InputDeployConfig,
+            deviceCount: Int,
+            apCount: Int,
+            messageSize: Double
+        ) = allApplication(inputDeployConfig.communication.copy(
+            usagePercentage = listOf(100.0), dataUpload = listOf(0.0), dataDownload = listOf(0.0)))
+            .map {
+                val pc = it.prob_cloud_selection / 100.0
+                val pe = 1 - pc
+                val neigh = deviceCount / apCount
+                val dataDownload = (pc * messageSize * pe * neigh) + (pe * (messageSize * (pc * neigh + pe * neigh * (apCount - 1) / apCount)))
+                val dataUpload = if (pc == 1.0) 0.0 else messageSize
+                return@map it.copy(data_download = dataDownload, data_upload = dataUpload)
+            }
+            .map { it.copy(
+                data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData,
+                data_download = it.data_download + inputDeployConfig.sensingUploadData
+            ) }
 
         private fun allApplication(inputApplication: InputApplication): List<Application> {
             val params = listOf(
