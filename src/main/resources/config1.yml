@@ -110,10 +110,10 @@ inputDeployConfig:
     name: "behaviour"
     probCloudSelection: [ 50.0 ]
     poissonInterarrival: [5.0]
-    activePeriod: [1.0] # sec
+    activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
-    vmUtilizationOnEdge: [30.0]
-    vmUtilizationOnCloud: [3.0]
+    vmUtilizationOnEdge: [10.0]
+    vmUtilizationOnCloud: [1.0]
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
@@ -122,6 +122,6 @@ inputDeployConfig:
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
     taskLength: [ 15.0 ]
-    vmUtilizationOnEdge: [ 30.0 ]
-    vmUtilizationOnCloud: [ 3.0 ]
+    vmUtilizationOnEdge: [ 10.0 ]
+    vmUtilizationOnCloud: [ 1.0 ]
     vmUtilizationOnMobile: [ 0.0 ]
