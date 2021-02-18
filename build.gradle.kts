@@ -115,7 +115,7 @@ tasks.register<DefaultTask>("batch") {
     doLast {
         val runtime = Runtime.getRuntime()
         val files = ListOfFiles(outputDir.listFiles().first { it.extension == "csv" })
-        val jobs = (0 until runtime.availableProcessors() - 2)
+        val jobs = (0 until runtime.availableProcessors() - 1)
             .map { Job(runtime, files, jarPath) }
             .map { Pair(it, it.future) }
         jobs.forEach { it.first.start() }
