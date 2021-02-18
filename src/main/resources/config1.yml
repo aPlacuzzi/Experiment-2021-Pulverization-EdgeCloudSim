@@ -13,7 +13,7 @@ generalConfig:
   deepFileLogEnabled: false
   minNumberOfMobileDevices: 100
   maxNumberOfMobileDevices: 500
-  mobileDeviceCounterSize: 200
+  mobileDeviceCounterSize: 10
   # sec
   wanPropogationDelay:
   - 0.15
@@ -108,7 +108,7 @@ inputDeployConfig:
   actuatorDownloadData: 1.0
   behaviour:
     name: "behaviour"
-    probCloudSelection: [ 50.0 ]
+    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
     poissonInterarrival: [5.0]
     activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
@@ -117,7 +117,7 @@ inputDeployConfig:
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
-    probCloudSelection: [ 50.0 ]
+    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
     poissonInterarrival: [ 5.0 ]
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
