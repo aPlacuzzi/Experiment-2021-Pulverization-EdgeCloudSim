@@ -1,5 +1,6 @@
 package it.unibo.configgenerator.model.protelis
 
+import org.protelis.lang.datatype.FunctionDefinition
 import org.protelis.lang.interpreter.ProtelisAST
 import org.protelis.lang.interpreter.impl.*
 import org.protelis.parser.protelis.Share
@@ -28,6 +29,14 @@ data class ProtelisProgramWrapper(private val protelisProgram: ProtelisProgram):
     private fun flatAst(ast: ProtelisAST<*>): Sequence<ProtelisAST<*>> = sequenceOf(ast) +
         ast.branches.flatMap { flatAst(it) } +
         when(ast) {
+            is Constant<*> -> {
+                val maybeLambda = ast.evaluate(null)
+                if (maybeLambda is FunctionDefinition) {
+                    flatAst(maybeLambda.body)
+                } else {
+                    emptySequence()
+                }
+            }
             is Invoke -> flatAst(ast.leftExpression)
             is FunctionCall -> flatAst(ast.functionDefinition.body)
             is ShareCall<*, *> -> ast.yieldExpression.transform { flatAst(it!!) }.or(emptySequence())
