@@ -57,7 +57,7 @@ generalConfig:
   simulationScenarios: SINGLE_TIER,TWO_TIER,TWO_TIER_WITH_EO
   # sec
   attractivenessL1MeanWaitingTime:
-  - 120
+  - 60
   # sec
   attractivenessL2MeanWaitingTime:
   - 120
