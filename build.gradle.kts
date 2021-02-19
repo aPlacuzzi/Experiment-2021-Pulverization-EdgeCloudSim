@@ -120,12 +120,12 @@ class ListOfFiles(csvFile: File) {
     }
 }
 
-tasks.register<DefaultTask>("defaultBatch") {
+fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
     doLast {
         val runtime = Runtime.getRuntime()
-        val files = ListOfFiles(outputDir.listFiles().first { it.name == "simulations.csv" })
+        val files = ListOfFiles(outputDir.listFiles().first { it.name == fileName })
         val jobs = (0 until runtime.availableProcessors() - 1)
             .map { Job(runtime, files, jarPath) }
             .map { Pair(it, it.future) }
@@ -134,16 +134,5 @@ tasks.register<DefaultTask>("defaultBatch") {
     }
 }
 
-tasks.register<DefaultTask>("recoverBatch") {
-    dependsOn("build")
-    val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
-    doLast {
-        val runtime = Runtime.getRuntime()
-        val files = ListOfFiles(outputDir.listFiles().first { it.name == "recover.csv" })
-        val jobs = (0 until runtime.availableProcessors() - 1)
-            .map { Job(runtime, files, jarPath) }
-            .map { Pair(it, it.future) }
-        jobs.forEach { it.first.start() }
-        jobs.forEach { it.second.get() }
-    }
-}
+makeBatch(taskName = "defaultBatch", fileName = "simulations.csv")
+makeBatch(taskName = "recoverBatch", fileName = "recover.csv")
