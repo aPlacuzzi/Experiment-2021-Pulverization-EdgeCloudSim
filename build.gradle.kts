@@ -36,7 +36,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-val outputDir = File(projectDir, "output2")
+val outputDir = File(projectDir, "output")
 val resourcesDir = "${projectDir.absolutePath}${separator}src${separator}main${separator}resources"
 val configFile = File(resourcesDir, "config1.yml")
 val protelisProgram = "sgcg:sgcg"
