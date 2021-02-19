@@ -13,7 +13,7 @@ generalConfig:
   deepFileLogEnabled: false
   minNumberOfMobileDevices: 100
   maxNumberOfMobileDevices: 500
-  mobileDeviceCounterSize: 10
+  mobileDeviceCounterSize: 50
   # sec
   wanPropogationDelay:
   - 0.15
@@ -78,37 +78,37 @@ edgesConfig:
   locations:
   - x: 1
     y: 1
-    attractiveness: 2 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 1
     y: 2
-    attractiveness: 1 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 1
     y: 3
-    attractiveness: 2 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 2
     y: 1
-    attractiveness: 1 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 2
     y: 2
     attractiveness: 0 # 0, 1, 2
   - x: 2
     y: 3
-    attractiveness: 1 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 3
     y: 1
-    attractiveness: 2 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 3
     y: 2
-    attractiveness: 1 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
   - x: 3
     y: 3
-    attractiveness: 2 # 0, 1, 2
+    attractiveness: 0 # 0, 1, 2
 inputDeployConfig:
   sensingUploadData: 0.5
   actuatorDownloadData: 1.0
   behaviour:
     name: "behaviour"
-    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
+    probCloudSelection: [ 50.0 ]
     poissonInterarrival: [5.0]
     activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
@@ -117,7 +117,7 @@ inputDeployConfig:
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
-    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
+    probCloudSelection: [ 50.0 ]
     poissonInterarrival: [ 5.0 ]
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
