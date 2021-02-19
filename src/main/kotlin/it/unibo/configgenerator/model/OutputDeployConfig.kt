@@ -53,8 +53,8 @@ data class OutputDeployConfig(val deploy: List<Application>) {
                     data_upload = it[1].data_upload + commToBehaUpload * pDifferentHost,
                     data_download = it[1].data_download + commToBehaDownload * pDifferentHost)
                 val behaApp = it[0].copy(
-                    data_upload = commToBehaDownload * pDifferentHost,
-                    data_download = commToBehaUpload * pDifferentHost)
+                    data_upload = if (pDifferentHost == 0.0) 0.001 else (commToBehaDownload * pDifferentHost),
+                    data_download = if (pDifferentHost == 0.0) 0.001 else (commToBehaUpload * pDifferentHost))
                 return@map OutputDeployConfig(listOf(behaApp, commApp))
             }
         }
@@ -147,9 +147,9 @@ data class Application(
         "$indent\t<delay_sensitivity>$delay_sensitivity</delay_sensitivity>\n" +
         "$indent\t<active_period>$active_period</active_period>\n" +
         "$indent\t<idle_period>$idle_period</idle_period>\n" +
-        "$indent\t<data_upload>${BigDecimal(data_upload).setScale(3, RoundingMode.CEILING)}</data_upload>\n" +
-        "$indent\t<data_download>${BigDecimal(data_download).setScale(3, RoundingMode.CEILING)}</data_download>\n" +
-        "$indent\t<task_length>${BigDecimal(task_length).setScale(3, RoundingMode.CEILING)}</task_length>\n" +
+        "$indent\t<data_upload>${BigDecimal(data_upload).setScale(3, RoundingMode.HALF_DOWN)}</data_upload>\n" +
+        "$indent\t<data_download>${BigDecimal(data_download).setScale(3, RoundingMode.HALF_DOWN)}</data_download>\n" +
+        "$indent\t<task_length>${BigDecimal(task_length).setScale(3, RoundingMode.HALF_DOWN)}</task_length>\n" +
         "$indent\t<required_core>$required_core</required_core>\n" +
         "$indent\t<vm_utilization_on_edge>$vm_utilization_on_edge</vm_utilization_on_edge>\n" +
         "$indent\t<vm_utilization_on_cloud>$vm_utilization_on_cloud</vm_utilization_on_cloud>\n" +
