@@ -129,12 +129,14 @@ fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(
         val runtime = Runtime.getRuntime()
         val configFile = outputDir.listFiles().first { it.name == fileName }
         (firstIteration .. lastIteration).forEach { iteration ->
+            println("start iteration: $iteration, the last one is: $lastIteration")
             val files = ListOfFiles(configFile, iteration)
             val jobs = (0 until runtime.availableProcessors() - 1)
                 .map { Job(runtime, files, jarPath) }
                 .map { Pair(it, it.future) }
             jobs.forEach { it.first.start() }
             jobs.forEach { it.second.get() }
+            println("finish iteration: $iteration, the last one is: $lastIteration")
         }
     }
 }
