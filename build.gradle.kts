@@ -89,13 +89,13 @@ class Job(
 
 data class Config(val resultDir: String, val generalConfig: String, val edgeConfig: String, val deployConfig: String)
 
-class ListOfFiles(csvFile: File) {
-    val files = csvFile.bufferedReader(Charsets.UTF_8)
+class ListOfFiles(csvFile: File, iterationNumber: Int) {
+    private val files = csvFile.bufferedReader(Charsets.UTF_8)
         .lineSequence()
         .drop(1)
         .map { it.split(",") }
         .map { Config(
-            resultDir = createResultDirIfAbsent(File(outputDir, it[0])),
+            resultDir = createResultDirIfAbsent(File(File(outputDir, it[0]), "ite$iterationNumber")),
             generalConfig = File(outputDir, it[1]).absolutePath,
             edgeConfig = File(outputDir, it[2]).absolutePath,
             deployConfig = File(outputDir, it[3]).absolutePath
@@ -120,17 +120,22 @@ class ListOfFiles(csvFile: File) {
     }
 }
 
+val firstIteration = 2
+val lastIteration = 5
 fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
     doLast {
         val runtime = Runtime.getRuntime()
-        val files = ListOfFiles(outputDir.listFiles().first { it.name == fileName })
-        val jobs = (0 until runtime.availableProcessors() - 1)
-            .map { Job(runtime, files, jarPath) }
-            .map { Pair(it, it.future) }
-        jobs.forEach { it.first.start() }
-        jobs.forEach { it.second.get() }
+        val configFile = outputDir.listFiles().first { it.name == fileName }
+        (firstIteration .. lastIteration).forEach { iteration ->
+            val files = ListOfFiles(configFile, iteration)
+            val jobs = (0 until runtime.availableProcessors() - 1)
+                .map { Job(runtime, files, jarPath) }
+                .map { Pair(it, it.future) }
+            jobs.forEach { it.first.start() }
+            jobs.forEach { it.second.get() }
+        }
     }
 }
 
