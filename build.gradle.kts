@@ -120,12 +120,12 @@ class ListOfFiles(csvFile: File) {
     }
 }
 
-fun batch(taskName: String, fileName: String) = tasks.register<DefaultTask>(taskName) {
+tasks.register<DefaultTask>("defaultBatch") {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
     doLast {
         val runtime = Runtime.getRuntime()
-        val files = ListOfFiles(outputDir.listFiles().first { it.name == fileName })
+        val files = ListOfFiles(outputDir.listFiles().first { it.name == "simulations.csv" })
         val jobs = (0 until runtime.availableProcessors() - 1)
             .map { Job(runtime, files, jarPath) }
             .map { Pair(it, it.future) }
@@ -134,10 +134,16 @@ fun batch(taskName: String, fileName: String) = tasks.register<DefaultTask>(task
     }
 }
 
-tasks.register<DefaultTask>("defaultBatch") {
-    dependsOn(batch("batch", "simulations.csv"))
-}
-
 tasks.register<DefaultTask>("recoverBatch") {
-    dependsOn(batch("recover", "recover.csv"))
+    dependsOn("build")
+    val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
+    doLast {
+        val runtime = Runtime.getRuntime()
+        val files = ListOfFiles(outputDir.listFiles().first { it.name == "recover.csv" })
+        val jobs = (0 until runtime.availableProcessors() - 1)
+            .map { Job(runtime, files, jarPath) }
+            .map { Pair(it, it.future) }
+        jobs.forEach { it.first.start() }
+        jobs.forEach { it.second.get() }
+    }
 }
