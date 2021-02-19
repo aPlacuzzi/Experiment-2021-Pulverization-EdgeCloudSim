@@ -43,11 +43,11 @@ val protelisProgram = "sgcg:sgcg"
 
 tasks.register<JavaExec>("createConfigFiles") {
     dependsOn("build")
-
+/*
     if (outputDir.exists() && outputDir.isDirectory) {
         outputDir.deleteRecursively()
     }
-    outputDir.mkdir()
+    outputDir.mkdir()*/
 
     main = "it.unibo.configgenerator.main.Main"
     args(configFile.absolutePath, outputDir.absolutePath, protelisProgram)
@@ -63,17 +63,28 @@ class Job(
     private var stop = false
     override fun run() {
         while (!stop) {
-            val file = listOfFiles.getNextFile()
-            if (file == null) {
+            val config = listOfFiles.getNextConfig()
+            if (config == null) {
                 stop = true
             } else {
-                runtime.exec(getCmd(file)).onExit().get()
+                var completed = false
+                var attempt = 0
+                while (!completed && attempt < 2) {
+                    runtime.exec(getCmd(config)).onExit().get()
+                    completed = isCompleted(config)
+                    attempt++
+                }
             }
         }
         future.complete(0)
     }
     private fun getCmd(config: Config) =
         "java -jar $jarPath ${config.generalConfig} ${config.edgeConfig} ${config.deployConfig} ${config.resultDir} 1"
+
+    private fun isCompleted(config: Config): Boolean {
+        val deviceCount = File(config.generalConfig).name.substring(13, 16)
+        return File(config.resultDir).listFiles().any { it.name.substring(31, 34) == deviceCount }
+    }
 }
 
 data class Config(val resultDir: String, val generalConfig: String, val edgeConfig: String, val deployConfig: String)
@@ -98,7 +109,7 @@ class ListOfFiles(csvFile: File) {
         return file.absolutePath
     }
 
-    fun getNextFile(): Config? {
+    fun getNextConfig(): Config? {
         synchronized(this) {
             return if (files.isNotEmpty()) {
                 files.removeAt(0)
@@ -109,16 +120,24 @@ class ListOfFiles(csvFile: File) {
     }
 }
 
-tasks.register<DefaultTask>("batch") {
+fun batch(taskName: String, fileName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
     doLast {
         val runtime = Runtime.getRuntime()
-        val files = ListOfFiles(outputDir.listFiles().first { it.extension == "csv" })
+        val files = ListOfFiles(outputDir.listFiles().first { it.name == fileName })
         val jobs = (0 until runtime.availableProcessors() - 1)
             .map { Job(runtime, files, jarPath) }
             .map { Pair(it, it.future) }
         jobs.forEach { it.first.start() }
         jobs.forEach { it.second.get() }
     }
+}
+
+tasks.register<DefaultTask>("defaultBatch") {
+    dependsOn(batch("batch", "simulations.csv"))
+}
+
+tasks.register<DefaultTask>("recoverBatch") {
+    dependsOn(batch("recover", "recover.csv"))
 }
