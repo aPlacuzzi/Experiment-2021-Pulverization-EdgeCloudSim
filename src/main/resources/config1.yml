@@ -1,69 +1,69 @@
 generalConfig:
   # minutes
   simulationTime:
-  - 30
+    - 30
   # minutes
   warmUpPeriod:
-  - 3
+    - 3
   vmLoadCheckInterval:
-  - 0.1
+    - 0.1
   locationCheckInterval:
-  - 0.1
+    - 0.1
   fileLogEnabled: true
   deepFileLogEnabled: false
   minNumberOfMobileDevices: 100
   maxNumberOfMobileDevices: 500
-  mobileDeviceCounterSize: 50
+  mobileDeviceCounterSize: 10
   # sec
   wanPropogationDelay:
-  - 0.15
+    - 0.15
   gsmPropogationDelay:
-  - 0.16
+    - 0.16
   lanInternalDelay:
-  - 0.01
+    - 0.01
   #Mbps
   wlanBandwidth:
-  - 200
+    - 200
   wanBandwidth:
-  - 15
+    - 15
   gsmBandwidth:
-  - 10
+    - 10
   numberOfHostOnCloudDatacenter:
-  - 1
+    - 1
   numberOfVmOnCloudHost:
-  - 1
+    - 1
   coreForCloudVm:
-  - 128
+    - 128
   mipsForCloudVm:
-  - 120000
+    - 120000
   # Byte
   ramForCloudVm:
-  - 128000
+    - 128000
   # Byte
   storageForCloudVm:
-  - 1000000
+    - 1000000
   coreForMobileVm:
-  - 1
+    - 1
   mipsForMobileVm:
-  - 1000
+    - 1000
   # Byte
   ramForMobileVm:
-  - 1800
+    - 1800
   # Byte
   storageForMobileVm:
-  - 32000
+    - 32000
   # RANDOM_FIT, FIRST_FIT, NEXT_FIT, WORST_FIT, BEST_FIT, ONLY_EDGE
   orchestratorPolicies: NEXT_FIT
   simulationScenarios: SINGLE_TIER,TWO_TIER,TWO_TIER_WITH_EO
   # sec
   attractivenessL1MeanWaitingTime:
-  - 60
+    - 600
   # sec
   attractivenessL2MeanWaitingTime:
-  - 120
+    - 120
   # sec
   attractivenessL3MeanWaitingTime:
-  - 60
+    - 60
 edgesConfig:
   costPerBw: 0.1
   costPerSec: 3.0
@@ -76,39 +76,39 @@ edgesConfig:
   edgeStorage: 250000
   edgeVwCount: 1
   locations:
-  - x: 1
-    y: 1
-    attractiveness: 0 # 0, 1, 2
-  - x: 1
-    y: 2
-    attractiveness: 0 # 0, 1, 2
-  - x: 1
-    y: 3
-    attractiveness: 0 # 0, 1, 2
-  - x: 2
-    y: 1
-    attractiveness: 0 # 0, 1, 2
-  - x: 2
-    y: 2
-    attractiveness: 0 # 0, 1, 2
-  - x: 2
-    y: 3
-    attractiveness: 0 # 0, 1, 2
-  - x: 3
-    y: 1
-    attractiveness: 0 # 0, 1, 2
-  - x: 3
-    y: 2
-    attractiveness: 0 # 0, 1, 2
-  - x: 3
-    y: 3
-    attractiveness: 0 # 0, 1, 2
+    - x: 1
+      y: 1
+      attractiveness: 2 # 0, 1, 2
+    - x: 1
+      y: 2
+      attractiveness: 1 # 0, 1, 2
+    - x: 1
+      y: 3
+      attractiveness: 2 # 0, 1, 2
+    - x: 2
+      y: 1
+      attractiveness: 1 # 0, 1, 2
+    - x: 2
+      y: 2
+      attractiveness: 0 # 0, 1, 2
+    - x: 2
+      y: 3
+      attractiveness: 1 # 0, 1, 2
+    - x: 3
+      y: 1
+      attractiveness: 2 # 0, 1, 2
+    - x: 3
+      y: 2
+      attractiveness: 1 # 0, 1, 2
+    - x: 3
+      y: 3
+      attractiveness: 2 # 0, 1, 2
 inputDeployConfig:
   sensingUploadData: 0.5
   actuatorDownloadData: 1.0
   behaviour:
     name: "behaviour"
-    probCloudSelection: [ 50.0 ]
+    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
     poissonInterarrival: [5.0]
     activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
@@ -117,7 +117,7 @@ inputDeployConfig:
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
-    probCloudSelection: [ 50.0 ]
+    probCloudSelection: [ 0.0, 25.0, 50.0, 75.0, 100.0 ]
     poissonInterarrival: [ 5.0 ]
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
