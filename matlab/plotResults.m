@@ -1,13 +1,13 @@
-function [] = plotResults(baseDir, baseFileName)
-    plotAvgFailedTask(baseDir, baseFileName);
+function [] = plotResults(baseDir, baseFileName, withError)
+    plotAvgFailedTask(baseDir, baseFileName, withError);
     
-    plotAvgNetworkDelay(baseDir, baseFileName);
+    plotAvgNetworkDelay(baseDir, baseFileName, withError);
     
-    plotAvgProcessingTime(baseDir, baseFileName);
+    plotAvgProcessingTime(baseDir, baseFileName, withError);
     
-    plotAvgServiceTime(baseDir, baseFileName);
+    plotAvgServiceTime(baseDir, baseFileName, withError);
 	
-	plotAvgVmUtilization(baseDir, baseFileName);
+	plotAvgVmUtilization(baseDir, baseFileName, withError);
 	
-	plotTaskFailureReason(baseDir, baseFileName);
+	plotTaskFailureReason(baseDir, baseFileName, withError);
 end

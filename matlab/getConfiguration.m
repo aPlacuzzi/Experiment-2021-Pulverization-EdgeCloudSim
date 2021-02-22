@@ -6,11 +6,11 @@ function [ret_val] = getConfiguration(argType)
     if(argType == 1)
         ret_val = 'C:\Users\Placu\softcomp\EdgeCloudSim\scripts\sample_app1\output\09-02-2021_14-06\default_config\ite1.tar\';
     elseif(argType == 2)
-        ret_val = 1; %Number of iterations
+        ret_val = 5; %Number of iterations
     elseif(argType == 3)
         ret_val = 100; %min number of mobile device
     elseif(argType == 4)
-        ret_val = 20; %step size of mobile device count
+        ret_val = 10; %step size of mobile device count
     elseif(argType == 5)
         ret_val =500; %max number of mobile device
     elseif(argType == 6)
@@ -26,7 +26,7 @@ function [ret_val] = getConfiguration(argType)
     elseif(argType == 11)
         ret_val = 1; %return 1 if you want to save figure as pdf
     elseif(argType == 12)
-        ret_val = 0; %return 1 if you want to plot errors
+        ret_val = 1; %return 1 if you want to plot errors
     elseif(argType == 20)
         ret_val=1; %return 1 if graph is plotted colerful
     elseif(argType == 21)

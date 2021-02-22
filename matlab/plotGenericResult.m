@@ -1,4 +1,4 @@
-function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculatePercentage, folderPath, baseFileName)
+function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculatePercentage, withError, folderPath, baseFileName)
     numOfSimulations = getConfiguration(2);
     startOfMobileDeviceLoop = getConfiguration(3);
     stepOfMobileDeviceLoop = getConfiguration(4);
@@ -20,7 +20,7 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
             for j=1:numOfMobileDevices
                 try
                     mobileDeviceNumber = startOfMobileDeviceLoop + stepOfMobileDeviceLoop * (j-1);
-                    filePath = strcat(folderPath,'\SIMRESULT_',char(scenarioType(i)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log');
+                    filePath = strcat(folderPath,'\ite', int2str(s),'\SIMRESULT_',char(scenarioType(i)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log');
 
                     readData = dlmread(filePath,';',rowOfset,0);
                     value = readData(1,columnOfset);
@@ -69,8 +69,8 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
                 CI(2) = 0;
             end
 
-            min_results(i,j) = results(i,j) - CI(1);
-            max_results(i,j) = CI(2) - results(i,j);
+            min_results(i,j) = results(i,j) - SEM;%- CI(1);
+            max_results(i,j) = results(i,j) + SEM;%CI(2) - results(i,j);
         end
     end
     
@@ -92,14 +92,21 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
             
             markers = getConfiguration(50);
             for j=1:size(scenarioType,2)
-                plot(xIndex, results(j,i),char(markers(j)),'MarkerFaceColor',getConfiguration(20+j),'color',getConfiguration(20+j));
+                plot(xIndex, results(j,i),char(markers(j)),'MarkerFaceColor',getConfiguration(20+j),'color',getConfiguration(20+j),'LineWidth',1.5);
                 hold on;
             end
         end
         
         for j=1:size(scenarioType,2)
-            if(getConfiguration(12) == 1)
-                errorbar(types, results(j,:), min_results(j,:),max_results(j,:),':k','color',getConfiguration(20+j),'LineWidth',1.5);
+            if(withError)
+                plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
+                 hold on;
+                plot(types, min_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
+                 hold on;
+                plot(types, max_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
+                %e = errorbar(types, results(j,:), min_results(j,:),max_results(j,:),char(markers(j)));
+                %set(e, 'color', getConfiguration(20+j));
+                %set(e, 'LineWidth',0.5); 
             else
                 plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
             end
@@ -128,10 +135,12 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
     hold off;
     axis square
     xlabel(getConfiguration(10));
-    set(gca,'XTick', (startOfMobileDeviceLoop*xTickLabelCoefficient):(stepOfMobileDeviceLoop*xTickLabelCoefficient):endOfMobileDeviceLoop);
-    set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):(stepOfMobileDeviceLoop*xTickLabelCoefficient):endOfMobileDeviceLoop);
+    %set(gca,'XTick', (startOfMobileDeviceLoop*xTickLabelCoefficient):(stepOfMobileDeviceLoop*xTickLabelCoefficient):endOfMobileDeviceLoop);
+    %set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):(stepOfMobileDeviceLoop*xTickLabelCoefficient):endOfMobileDeviceLoop);
+    set(gca,'XTick', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
+    set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
     ylabel(yLabel);
-    set(gca,'XLim',[startOfMobileDeviceLoop-5 endOfMobileDeviceLoop+5]);
+    set(gca,'XLim',[startOfMobileDeviceLoop, endOfMobileDeviceLoop]);
     
     set(get(gca,'Xlabel'),'FontSize',12)
     set(get(gca,'Ylabel'),'FontSize',12)
