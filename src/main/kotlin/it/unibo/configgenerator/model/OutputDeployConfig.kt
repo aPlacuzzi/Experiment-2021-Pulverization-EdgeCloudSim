@@ -1,6 +1,8 @@
 package it.unibo.configgenerator.model
 
 import com.google.common.collect.Lists
+import it.unibo.configgenerator.controller.ProtelisComplexity
+import org.apache.commons.math3.ml.neuralnet.sofm.NeighbourhoodSizeFunction
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -10,36 +12,42 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             inputDeployConfig: InputDeployConfig,
             deviceCount: Int,
             apCount: Int,
-            messageSize: Double) = communication(inputDeployConfig, deviceCount, apCount, messageSize)
+            protelisComplexity: ProtelisComplexity
+        ): List<OutputDeployConfig> {
+            val neigh = neighbourhoodSize(deviceCount, apCount)
+            return communication(inputDeployConfig, neigh, apCount, protelisComplexity.msgSize)
                 .map { it.copy(
-                    data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData + messageSize * ((deviceCount * 1.0) / apCount),
-                    data_download = it.data_download + inputDeployConfig.sensingUploadData + messageSize
+                    data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData + protelisComplexity.msgSize * (deviceCount.toDouble() / apCount),
+                    data_download = it.data_download + inputDeployConfig.sensingUploadData + protelisComplexity.msgSize
                 ) }
                 .map { OutputDeployConfig(listOf(it)) }
+        }
 
         fun behaviourWithCommunication(
             inputDeployConfig: InputDeployConfig,
             deviceCount: Int,
             apCount: Int,
-            mips: Double,
-            messageSize: Double
-        ) = communication(inputDeployConfig, deviceCount, apCount, messageSize)
-            .map { it.copy(task_length = it.task_length + mips)}
-            .map { OutputDeployConfig(listOf(it)) }
+            protelisComplexity: ProtelisComplexity
+        ): List<OutputDeployConfig> {
+            val neigh = neighbourhoodSize(deviceCount, apCount)
+            return communication(inputDeployConfig, neigh, apCount, protelisComplexity.msgSize)
+                .map { it.copy(task_length = it.task_length + protelisComplexity.estimateProtelisComplexity(neigh.toDouble()))}
+                .map { OutputDeployConfig(listOf(it)) }
+        }
 
         fun behaviourAndCommunication(
             inputDeployConfig: InputDeployConfig,
             deviceCount: Int,
             apCount: Int,
-            mips: Double,
-            messageSize: Double
+            protelisComplexity: ProtelisComplexity
         ): List<OutputDeployConfig> {
-            val commToBehaUpload = messageSize * (deviceCount / apCount)
-            val commToBehaDownload = messageSize
-            val communications = communication(inputDeployConfig, deviceCount, apCount, messageSize)
+            val neigh = neighbourhoodSize(deviceCount, apCount)
+            val commToBehaUpload = protelisComplexity.msgSize * neigh
+            val commToBehaDownload = protelisComplexity.msgSize
+            val communications = communication(inputDeployConfig, neigh, apCount, protelisComplexity.msgSize)
             val behaviour = allApplication(inputDeployConfig.behaviour.copy(
                 usagePercentage = listOf(50.0),
-                taskLength = listOf(mips),
+                taskLength = listOf(protelisComplexity.estimateProtelisComplexity(neigh.toDouble())),
                 dataUpload = listOf(0.0),
                 dataDownload = listOf(0.0)))
             return Lists.cartesianProduct(behaviour, communications).map {
@@ -61,7 +69,7 @@ data class OutputDeployConfig(val deploy: List<Application>) {
 
         private fun communication(
             inputDeployConfig: InputDeployConfig,
-            deviceCount: Int,
+            neigh: Int,
             apCount: Int,
             messageSize: Double
         ) = allApplication(inputDeployConfig.communication.copy(
@@ -69,7 +77,6 @@ data class OutputDeployConfig(val deploy: List<Application>) {
             .map {
                 val pc = it.prob_cloud_selection / 100.0
                 val pe = 1 - pc
-                val neigh = deviceCount / apCount
                 val dataDownload = (pc * messageSize * pe * neigh) + (pe * (messageSize * (pc * neigh + pe * neigh * (apCount - 1) / apCount)))
                 val dataUpload = if (pc == 1.0) 0.0 else messageSize
                 return@map it.copy(data_download = dataDownload, data_upload = dataUpload)
@@ -78,6 +85,8 @@ data class OutputDeployConfig(val deploy: List<Application>) {
                 data_upload = it.data_upload + inputDeployConfig.actuatorDownloadData,
                 data_download = it.data_download + inputDeployConfig.sensingUploadData
             ) }
+
+        private fun neighbourhoodSize(deviceCount: Int, apCount: Int): Int = deviceCount / apCount
 
         private fun allApplication(inputApplication: InputApplication): List<Application> {
             val params = listOf(

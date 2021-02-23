@@ -8,7 +8,7 @@ import kotlinx.serialization.properties.encodeToMap
 import java.io.File
 
 object ConfigGenerator {
-    fun generateConfig(inputFile: File, outputDirPath: String, protelisMips: Double, messageSize: Double) {
+    fun generateConfig(inputFile: File, outputDirPath: String, protelisComplexity: ProtelisComplexity) {
         val outputDir = File(outputDirPath).also { it.mkdir() }
         val generalConfigDir = File(outputDir, "generalConfig").also { it.mkdir() }
         val edgeDir = File(outputDir, "edgeConfig").also { it.mkdir() }
@@ -37,7 +37,7 @@ object ConfigGenerator {
         outputGeneralConfig[0].singularizeDeviceCount().forEach {
             val deviceCount = it.min_number_of_mobile_devices
             val onlyCommunicationFiles = OutputDeployConfig
-                .onlyCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, messageSize)
+                .onlyCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, protelisComplexity)
                 .mapIndexed { index, element ->
                     val fileName = "$onlyCommunicationDeployKey${deviceCount}_${index}.xml"
                     File(deploysDir, fileName).also { file ->
@@ -47,7 +47,7 @@ object ConfigGenerator {
                     return@mapIndexed fileName
                 }
             val behaviourWithCommunicationFiles = OutputDeployConfig
-                .behaviourWithCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, protelisMips, messageSize)
+                .behaviourWithCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, protelisComplexity)
                 .mapIndexed { index, element ->
                     val fileName = "$behaviourWithCommunicationDeployKey${deviceCount}_${index}.xml"
                     File(deploysDir, fileName).also { file ->
@@ -57,7 +57,7 @@ object ConfigGenerator {
                     return@mapIndexed fileName
                 }
             val behaviourAndCommunicationFiles = OutputDeployConfig
-                .behaviourAndCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, protelisMips, messageSize)
+                .behaviourAndCommunication(inputDeployConfig, deviceCount, outputEdgeConfigs.edge_devices.size, protelisComplexity)
                 .mapIndexed { index, element ->
                     val fileName = "$behaviourAndCommunicationDeployKey${deviceCount}_${index}.xml"
                     File(deploysDir, fileName).also { file ->
