@@ -95,18 +95,23 @@ class ListOfFiles(csvFile: File, iterationNumber: Int) {
         .drop(1)
         .map { it.split(",") }
         .map { Config(
-            resultDir = createResultDirIfAbsent(File(File(outputDir, it[0]), "ite$iterationNumber")),
+            resultDir = createResultDirIfAbsent(it[0], "ite$iterationNumber"),
             generalConfig = File(outputDir, it[1]).absolutePath,
             edgeConfig = File(outputDir, it[2]).absolutePath,
             deployConfig = File(outputDir, it[3]).absolutePath
         ) }
         .toMutableList()
 
-    private fun createResultDirIfAbsent(file :File): String {
-        if (!file.exists()) {
-            file.mkdir()
+    private fun createResultDirIfAbsent(middleDirName :String, iteDirName: String): String {
+        var middleDir = File(outputDir, middleDirName)
+        if (!middleDir.exists()) {
+            middleDir.mkdir()
         }
-        return file.absolutePath
+        var iteDir = File(middleDir, iteDirName)
+        if (!iteDir.exists()) {
+            iteDir.mkdir()
+        }
+        return iteDir.absolutePath
     }
 
     fun getNextConfig(): Config? {
