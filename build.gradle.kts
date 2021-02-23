@@ -36,7 +36,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-val outputDir = File(projectDir, "output")
+val outputDir = File(projectDir, "output-test")
 val resourcesDir = "${projectDir.absolutePath}${separator}src${separator}main${separator}resources"
 val configFile = File(resourcesDir, "config1.yml")
 val protelisProgram = "sgcg:sgcg"
@@ -46,8 +46,8 @@ tasks.register<JavaExec>("createConfigFiles") {
 /*
     if (outputDir.exists() && outputDir.isDirectory) {
         outputDir.deleteRecursively()
-    }
-    outputDir.mkdir()*/
+    }*/
+    outputDir.mkdir()
 
     main = "it.unibo.configgenerator.main.Main"
     args(configFile.absolutePath, outputDir.absolutePath, protelisProgram)
@@ -120,8 +120,8 @@ class ListOfFiles(csvFile: File, iterationNumber: Int) {
     }
 }
 
-val firstIteration = 2
-val lastIteration = 5
+val firstIteration = 1
+val lastIteration = 1
 fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
