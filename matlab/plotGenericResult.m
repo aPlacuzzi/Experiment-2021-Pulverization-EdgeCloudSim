@@ -86,48 +86,34 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
     set(0,'DefaultTextFontName','Times New Roman');
     set(0,'DefaultAxesFontSize',10);
     set(0,'DefaultTextFontSize',12);
-    if(getConfiguration(20) == 1)
-        for i=1:1:numOfMobileDevices
-            xIndex=startOfMobileDeviceLoop+((i-1)*stepOfMobileDeviceLoop);
-            
-            markers = getConfiguration(50);
-            for j=1:size(scenarioType,2)
-                plot(xIndex, results(j,i),char(markers(j)),'MarkerFaceColor',getConfiguration(20+j),'color',getConfiguration(20+j),'LineWidth',1.5);
-                hold on;
-            end
-        end
-        
-        for j=1:size(scenarioType,2)
-            if(withError)
-                plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
-                 hold on;
-                plot(types, min_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
-                 hold on;
-                plot(types, max_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
-                %e = errorbar(types, results(j,:), min_results(j,:),max_results(j,:),char(markers(j)));
-                %set(e, 'color', getConfiguration(20+j));
-                %set(e, 'LineWidth',0.5); 
-            else
-                plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
-            end
-            hold on;
-        end
     
-        set(gca,'color','none');
-    else
-        markers = getConfiguration(40);
+    for i=1:1:numOfMobileDevices
+        xIndex=startOfMobileDeviceLoop+((i-1)*stepOfMobileDeviceLoop);
+        
+        markers = getConfiguration(50);
         for j=1:size(scenarioType,2)
-            if(getConfiguration(12) == 1)
-                errorbar(types, results(j,:),min_results(j,:),max_results(j,:),char(markers(j)),'MarkerFaceColor','w','LineWidth',1.2);
-            else
-               plot(types, results(j,:),char(markers(j)),'MarkerFaceColor','w','LineWidth',1.2);
-            end
+            plot(xIndex, results(j,i),char(markers(j)),'MarkerFaceColor',getConfiguration(20+j),'color',getConfiguration(20+j),'LineWidth',1.5);
             hold on;
         end
-        
     end
     
+    for j=1:size(scenarioType,2)
+        if(withError)
+            plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
+             hold on;
+            plot(types, min_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
+             hold on;
+            plot(types, max_results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',0.5);
+        else
+            plot(types, results(j,:),char(markers(j)),'color',getConfiguration(20+j),'LineWidth',1.5);
+        end
+        hold on;
+    end
+
+    set(gca,'color','none');
+    
     lgnd = legend(legends,'Location','NorthWest');
+    legend 'boxoff';
     if(getConfiguration(20) == 1)
         set(lgnd,'color','none');
     end
