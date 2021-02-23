@@ -74,7 +74,7 @@ edgesConfig:
   edgeMips: 12000
   edgeRam: 16000
   edgeStorage: 250000
-  edgeVwCount: 4
+  edgeVwCount: 1
   locations:
     - x: 1
       y: 1
