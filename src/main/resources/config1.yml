@@ -25,9 +25,9 @@ generalConfig:
   wlanBandwidth:
     - 200
   wanBandwidth:
-    - 15
+    - 200
   gsmBandwidth:
-    - 10
+    - 0
   numberOfHostOnCloudDatacenter:
     - 1
   numberOfVmOnCloudHost:
@@ -74,7 +74,7 @@ edgesConfig:
   edgeMips: 12000
   edgeRam: 16000
   edgeStorage: 250000
-  edgeVwCount: 1
+  edgeVwCount: 8
   locations:
     - x: 1
       y: 1
