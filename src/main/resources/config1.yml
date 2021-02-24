@@ -112,8 +112,8 @@ inputDeployConfig:
     poissonInterarrival: [5.0]
     activePeriod: [20.0] # sec
     idlePeriod: [0.0] # sec
-    vmUtilizationOnEdge: [25.0]
-    vmUtilizationOnCloud: [4.0]
+    vmUtilizationOnEdge: [15.0]
+    vmUtilizationOnCloud: [2.0]
     vmUtilizationOnMobile: [0.0]
   communication:
     name: "communication"
@@ -122,6 +122,6 @@ inputDeployConfig:
     activePeriod: [ 20.0 ]
     idlePeriod: [ 0.0 ]
     taskLength: [ 15.0 ]
-    vmUtilizationOnEdge: [ 25.0 ]
-    vmUtilizationOnCloud: [ 4.0 ]
+    vmUtilizationOnEdge: [ 10.0 ]
+    vmUtilizationOnCloud: [ 2.0 ]
     vmUtilizationOnMobile: [ 0.0 ]
