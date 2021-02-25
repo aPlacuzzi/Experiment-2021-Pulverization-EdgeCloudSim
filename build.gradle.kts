@@ -36,7 +36,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-val outputDir = File(projectDir, "output-test")
+val outputDir = File(projectDir, "output")
 val resourcesDir = "${projectDir.absolutePath}${separator}src${separator}main${separator}resources"
 val configFile = File(resourcesDir, "config1.yml")
 val protelisProgram = "sgcg:sgcg"
@@ -46,9 +46,9 @@ tasks.register<JavaExec>("createConfigFiles") {
 /*
     if (outputDir.exists() && outputDir.isDirectory) {
         outputDir.deleteRecursively()
-    }*/
+    }
     outputDir.mkdir()
-
+*/
     main = "it.unibo.configgenerator.main.Main"
     args(configFile.absolutePath, outputDir.absolutePath, protelisProgram)
     classpath = sourceSets["main"].runtimeClasspath
@@ -125,8 +125,8 @@ class ListOfFiles(csvFile: File, iterationNumber: Int) {
     }
 }
 
-val firstIteration = 1
-val lastIteration = 1
+val firstIteration = 6
+val lastIteration = 7
 fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
     val jarPath = File(projectDir, "libs${separator}EdgeCloudSim.jar").absolutePath
@@ -134,14 +134,14 @@ fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(
         val runtime = Runtime.getRuntime()
         val configFile = outputDir.listFiles().first { it.name == fileName }
         (firstIteration .. lastIteration).forEach { iteration ->
-            println("start iteration: $iteration, the last one is: $lastIteration")
+            println("start iteration: $iteration, the last one is: $lastIteration, at ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())}")
             val files = ListOfFiles(configFile, iteration)
             val jobs = (0 until runtime.availableProcessors() - 1)
                 .map { Job(runtime, files, jarPath) }
                 .map { Pair(it, it.future) }
             jobs.forEach { it.first.start() }
             jobs.forEach { it.second.get() }
-            println("finish iteration: $iteration, the last one is: $lastIteration")
+            println("finish iteration: $iteration, the last one is: $lastIteration, at ${DateTimeFormatter.ISO_INSTANT.format(Instant.now())}")
         }
     }
 }
