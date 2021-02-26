@@ -26,6 +26,8 @@ jobs:
           mkdir charts
           cd charts
           mkdir onlyCommunication
+          mkdir behaviourAndCommunication
+          mkdir behaviourWithCommunication
           cd ../..
       - name: load octave package
         run: echo "graphics_toolkit("gnuplot")" > ~/.octaverc
