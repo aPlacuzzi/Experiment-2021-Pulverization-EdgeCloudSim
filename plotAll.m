@@ -1,10 +1,10 @@
 function [] = plotAll()
-   
+	addpath(fullfile('./', 'matlab'))
     %plotResults('../output/results/behaviourAndCommunication', 6, 'EaC6_', false, '../output/charts/behaviourAndCommunication');
     %plotResults('../output/results/behaviourWithCommunication', 1, 'EwC1_', false, '../output/charts/behaviourWithCommunication');
     %plotResults('../output/results/onlyCommunication', 1, 'C1_', false, '../output/charts/onlyCommunication');
-	plotResults('../output/results/onlyCommunication', 0, 'C0_', false, '../output/charts/onlyCommunication');
-	plotResults('../output/result/onlyCommunication', 4, 'C4_', false, '../output/charts/onlyCommunication');
+	plotResults('./output/results/onlyCommunication', 0, 'C0_', false, './output/charts/onlyCommunication');
+	plotResults('./output/result/onlyCommunication', 4, 'C4_', false, './output/charts/onlyCommunication');
 	
 	%plotResults('../output/results/behaviourAndCommunication', 6, 'EaC6_withStdv_', true, '../output/charts/behaviourAndCommunication');
     %plotResults('../output/results/behaviourWithCommunication', 1, 'EwC1_withStdv_', true, '../output/charts/behaviourWithCommunication');
