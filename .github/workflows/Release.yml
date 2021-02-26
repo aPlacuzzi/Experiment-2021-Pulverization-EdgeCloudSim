@@ -47,7 +47,7 @@ jobs:
       - name: Create release
         run: |
           tag_name=$(git describe)
-          hub release create -a charts.tar.gz -m "$tag_name" "$tag_name"
+          hub release create -a charts.tar.gz -m "Release $tag_name" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
