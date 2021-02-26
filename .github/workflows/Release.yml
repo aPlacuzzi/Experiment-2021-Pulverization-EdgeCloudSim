@@ -27,7 +27,7 @@ jobs:
           mkdir charts
           cd charts
           mkdir onlyCommunication
-          cd ../../matlab
+          cd ../..
       - uses: docker://mtmiller/octave:7.0.0
         with:
-          args: plotAll.m
+          args: cd matlab & octave plotAll.m
