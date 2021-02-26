@@ -44,7 +44,7 @@ jobs:
           ./gravis/autotag
       - name: Create release
         run: |
-          tag_name=v0.1 
+          tag_name=$(git describe)
           hub release create -a charts.tar.gz -m "$tag_name" "$tag_name"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
