@@ -27,6 +27,8 @@ jobs:
           cd charts
           mkdir onlyCommunication
           cd ../..
+      - name: load octave package
+        run: echo "pkg load statistics" > ~/.octaverc
       - uses: docker://mtmiller/octave:7.0.0
         with:
           args: octave plotAll.m
