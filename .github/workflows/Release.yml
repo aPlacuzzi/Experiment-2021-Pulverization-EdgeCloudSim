@@ -23,11 +23,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: create output dirs
         run: |
+          octave -v
           cd output
           mkdir charts
           cd charts
           mkdir onlyCommunication
           cd ../..
-      - uses: docker://mtmiller/octave:7.0.0
-        with:
-          args: cd matlab & octave plotAll.m
+      
