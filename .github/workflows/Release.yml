@@ -28,7 +28,7 @@ jobs:
           mkdir onlyCommunication
           cd ../..
       - name: load octave package
-        run: echo "pkg load statistics" > ~/.octaverc
+        run: echo "graphics_toolkit("gnuplot")" > ~/.octaverc
       - uses: docker://mtmiller/octave:7.0.0
         with:
           args: octave plotAll.m
