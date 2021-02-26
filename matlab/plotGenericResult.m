@@ -11,7 +11,7 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
 
     pos=getConfiguration(9);
     
-    all_results = loadData(rowOfset, columnOfset, appType, calculatePercentage, folderPath, folderNum)
+    all_results = loadData(rowOfset, columnOfset, appType, calculatePercentage, folderPath, folderNum);
     min_results = zeros(size(scenarioType,2), numOfMobileDevices);
     max_results = zeros(size(scenarioType,2), numOfMobileDevices);
     

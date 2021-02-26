@@ -11,18 +11,18 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
 
     pos=getConfiguration(9);
     
-    all_results = loadData(rowOfset1, columnOfset, appType, calculatePercentage, folderPath, folderNum)
+    all_results = loadData(rowOfset1, columnOfset, appType, calculatePercentage, folderPath, folderNum);
     min_results = zeros(size(scenarioType,2), numOfMobileDevices);
     max_results = zeros(size(scenarioType,2), numOfMobileDevices);
     
-    all_resultsCloud = loadData(rowOfset2, columnOfset, appType, calculatePercentage, folderPath, folderNum)
+    all_resultsCloud = loadData(rowOfset2, columnOfset, appType, calculatePercentage, folderPath, folderNum);
     
     if(numOfSimulations == 1)
         results = all_results;
-		resultsCloud = all_resultsCloud
+		resultsCloud = all_resultsCloud;
     else
         results = mean(all_results); %still 3d matrix but 1xMxN format
-		resultsCloud = mean(all_resultsCloud)
+		resultsCloud = mean(all_resultsCloud);
     end
     
     results = squeeze(results); %remove singleton dimensions
@@ -32,7 +32,7 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
         for j=1:numOfMobileDevices
             x=all_results(:,i,j);                    % Create Data
             SEM = std(x)/sqrt(length(x));            % Standard Error
-            ts = tinv([0.05  0.95],length(x)-1);   % T-Score
+            ts = tinv([0.05  0.95],length(x)-1);   	% T-Score
             CI = mean(x) + ts*SEM;                   % Confidence Intervals
 
             if(CI(1) < 0)
