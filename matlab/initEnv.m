@@ -1,6 +1,6 @@
 function initEnv
 
-installlist = {'struct','io','statistics','optim','image'};
+installlist = {'statistics'};
 for ii=1:length(installlist)
         try
         	% Try loading Octave packages
