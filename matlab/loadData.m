@@ -13,8 +13,7 @@ function [all_results] = loadData(rowOfset, columnOfset, appType, calculatePerce
         for j=1:numOfMobileDevices
           try
               mobileDeviceNumber = startOfMobileDeviceLoop + stepOfMobileDeviceLoop * (j-1);
-              filePath = strcat(folderPath, '0','\ite', int2str(s),'\SIMRESULT_',char(scenarioType(1)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log');
-
+              filePath = fullfile(strcat(folderPath, '0'),strcat('ite', int2str(s)),strcat('SIMRESULT_',char(scenarioType(1)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log'));
               readData = dlmread(filePath,';',rowOfset,0);
               value = readData(1,columnOfset);
               if(strcmp(calculatePercentage,'percentage_for_all'))
@@ -40,8 +39,7 @@ function [all_results] = loadData(rowOfset, columnOfset, appType, calculatePerce
         for j=1:numOfMobileDevices
           try
               mobileDeviceNumber = startOfMobileDeviceLoop + stepOfMobileDeviceLoop * (j-1);
-              filePath = strcat(folderPath, int2str(folderNum),'\ite', int2str(s),'\SIMRESULT_',char(scenarioType(i)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log');
-
+              filePath = fullfile(strcat(folderPath, int2str(folderNum)),strcat('ite', int2str(s)),strcat('SIMRESULT_',char(scenarioType(i)),'_NEXT_FIT_',int2str(mobileDeviceNumber),'DEVICES_',appType,'_GENERIC.log'));
               readData = dlmread(filePath,';',rowOfset,0);
               value = readData(1,columnOfset);
               if(strcmp(calculatePercentage,'percentage_for_all'))

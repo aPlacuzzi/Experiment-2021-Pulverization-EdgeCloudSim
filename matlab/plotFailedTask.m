@@ -1,4 +1,4 @@
-function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType, calculatePercentage, withError, folderPath, folderNum, baseFileName)
+function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType, calculatePercentage, withError, folderPath, folderNum, baseFileName, outputDir)
     numOfSimulations = getConfiguration(2);
     startOfMobileDeviceLoop = getConfiguration(3);
     stepOfMobileDeviceLoop = getConfiguration(4);
@@ -113,7 +113,7 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
         set(hFig, 'PaperPositionMode', 'manual');
         set(hFig, 'PaperPosition',[0 0 pos(3) pos(4)]);
         set(gcf, 'PaperSize', [pos(3) pos(4)]); %Keep the same paper size
-        filename = strcat(folderPath, int2str(folderNum),'\',baseFileName,'_',appType,'.pdf');
+        filename = fullfile(outputDir,strcat(baseFileName,'_',appType,'.pdf'));
         print(gcf, filename, '-svgconvert')
     end
 end
