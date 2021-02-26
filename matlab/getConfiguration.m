@@ -6,7 +6,7 @@ function [ret_val] = getConfiguration(argType)
     if(argType == 1)
         ret_val = 'C:\Users\Placu\softcomp\EdgeCloudSim\scripts\sample_app1\output\09-02-2021_14-06\default_config\ite1.tar\';
     elseif(argType == 2)
-        ret_val = 5; %Number of iterations
+        ret_val = 7; %Number of iterations
     elseif(argType == 3)
         ret_val = 100; %min number of mobile device
     elseif(argType == 4)
