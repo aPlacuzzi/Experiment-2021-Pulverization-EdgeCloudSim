@@ -1,6 +1,6 @@
 function initEnv
 
-installlist = {'statistics'};
+installlist = {'io','statistics'};
 for ii=1:length(installlist)
         try
         	% Try loading Octave packages
