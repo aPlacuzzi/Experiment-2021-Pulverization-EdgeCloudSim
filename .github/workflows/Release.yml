@@ -19,16 +19,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: intall octave
-        run: |
-          curl -L -S --retry 5 https://octave-snapshot.s3.amazonaws.com/public/octave-5.1.0-ubuntu-bionic-amd64.tar.xz | tar -xJ
-          export LANG=C.UTF-8
-          export OCTAVE_HOME=/octave
-          export OCTAVE_VERSION=5.1.0
-          export LD_LIBRARY_PATH=$OCTAVE_HOME/lib/octave/5.1.0
-          export PATH $OCTAVE_HOME/bin:$PATH
-          octave -v
-
       # Runs a set of commands using the runners shell
       - name: create output dirs
         run: |
@@ -37,4 +27,7 @@ jobs:
           cd charts
           mkdir onlyCommunication
           cd ../..
+      - uses: docker://mtmiller/octave:7.0.0
+        with:
+          args: octave plotAll.m
       
