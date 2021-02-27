@@ -14,8 +14,8 @@ data class InputGeneralConfig (
     val maxNumberOfMobileDevices: Int = 1000,
     val mobileDeviceCounterSize: Int = 100,
 
-    val wanPropogationDelay: List<Double> = listOf(0.15),
-    val gsmPropogationDelay: List<Double> = listOf(0.16),
+    val wanPropagationDelay: List<Double> = listOf(0.15),
+    val gsmPropagationDelay: List<Double> = listOf(0.16),
     val lanInternalDelay: List<Double> = listOf(0.01),
     val wlanBandwidth: List<Int> = listOf(200),
     val wanBandwidth: List<Int> = listOf(15),

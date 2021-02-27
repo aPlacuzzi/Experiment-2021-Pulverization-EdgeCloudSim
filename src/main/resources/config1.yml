@@ -15,9 +15,9 @@ generalConfig:
   maxNumberOfMobileDevices: 500
   mobileDeviceCounterSize: 10
   # sec
-  wanPropogationDelay:
+  wanPropagationDelay:
     - 0.15
-  gsmPropogationDelay:
+  gsmPropagationDelay:
     - 0.16
   lanInternalDelay:
     - 0.01
