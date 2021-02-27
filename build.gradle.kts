@@ -45,12 +45,11 @@ val protelisProgram = "sgcg:sgcg"
 
 tasks.register<JavaExec>("createConfigFiles") {
     dependsOn("build")
-/*
-    if (outputDir.exists() && outputDir.isDirectory) {
-        outputDir.deleteRecursively()
+
+    if (!outputDir.exists()) {
+        outputDir.mkdir()
     }
-    outputDir.mkdir()
-*/
+
     main = "it.unibo.configgenerator.main.Main"
     args(configFile.absolutePath, outputDir.absolutePath, protelisProgram)
     classpath = sourceSets["main"].runtimeClasspath
