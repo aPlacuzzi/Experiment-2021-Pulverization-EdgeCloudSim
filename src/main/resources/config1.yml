@@ -36,20 +36,16 @@ generalConfig:
     - 128
   mipsForCloudVm:
     - 120000
-  # Byte
   ramForCloudVm:
     - 128000
-  # Byte
   storageForCloudVm:
     - 1000000
   coreForMobileVm:
     - 1
   mipsForMobileVm:
     - 1000
-  # Byte
   ramForMobileVm:
     - 1800
-  # Byte
   storageForMobileVm:
     - 32000
   # RANDOM_FIT, FIRST_FIT, NEXT_FIT, WORST_FIT, BEST_FIT, ONLY_EDGE
