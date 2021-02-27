@@ -126,7 +126,7 @@ class ListOfFiles(csvFile: File, iterationNumber: Int) {
     }
 }
 
-val firstIteration = 6
+val firstIteration = 1
 val lastIteration = 7
 fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(taskName) {
     dependsOn("build")
@@ -148,4 +148,3 @@ fun makeBatch(fileName: String, taskName: String) = tasks.register<DefaultTask>(
 }
 
 makeBatch(taskName = "defaultBatch", fileName = "simulations.csv")
-makeBatch(taskName = "recoverBatch", fileName = "recover.csv")
