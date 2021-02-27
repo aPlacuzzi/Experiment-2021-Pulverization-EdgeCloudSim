@@ -1,6 +1,9 @@
 function [] = plotAll()
 	addpath(fullfile('./', 'matlab'));
 	initEnv();
+	mkdir('./output/charts/behaviourAndCommunication');
+	mkdir('./output/charts/behaviourWithCommunication');
+	mkdir('./output/charts/onlyCommunication');
     plotResults('./output/results/behaviourAndCommunication', 6, 'EaC6_', false, './output/charts/behaviourAndCommunication');
     plotResults('./output/results/behaviourWithCommunication', 1, 'EwC1_', false, './output/charts/behaviourWithCommunication');
     plotResults('./output/results/onlyCommunication', 1, 'C1_', false, './output/charts/onlyCommunication');

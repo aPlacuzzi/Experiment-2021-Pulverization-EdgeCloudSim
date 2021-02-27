@@ -19,16 +19,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      # Runs a set of commands using the runners shell
-      - name: create output dirs
-        run: |
-          cd output
-          mkdir charts
-          cd charts
-          mkdir onlyCommunication
-          mkdir behaviourAndCommunication
-          mkdir behaviourWithCommunication
-          cd ../..
       - name: load octave package
         run: echo "graphics_toolkit("gnuplot")" > ~/.octaverc
       - uses: docker://mtmiller/octave:7.0.0
