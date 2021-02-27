@@ -103,6 +103,7 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
     set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
     ylabel(yLabel);
     set(gca,'XLim',[startOfMobileDeviceLoop, endOfMobileDeviceLoop]);
+	set(gca,'YLim',[0, 100.0]);
     
     set(get(gca,'Xlabel'),'FontSize',12)
     set(get(gca,'Ylabel'),'FontSize',12)
