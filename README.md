@@ -4,7 +4,7 @@
 
 This repository contains code and instruction to reproduce the experiments presented in the paper 
 "A Methodology and Simulation-based Toolchain for Estimating Deployment Performance of Intelligent Collective Services at the Edge" 
-by Roberto Casadei, Giancarlo Fortino, Danilo Pianini, Andrea Placuzzi, Claudio Savaglio, and Mirko Viroli; submitted to Applied Soft Computing.
+by Roberto Casadei, Giancarlo Fortino, Danilo Pianini, Andrea Placuzzi, Claudio Savaglio, and Mirko Viroli.
 
 ## Requirements
 
