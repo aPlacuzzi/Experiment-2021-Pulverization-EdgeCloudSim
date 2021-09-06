@@ -1,4 +1,4 @@
-# Experiment-2021-AppliedSoftComputing-Pulverization
+# Experiment-2021-Pulverization-EdgeCloudSim
 
 ## Experimental results
 
