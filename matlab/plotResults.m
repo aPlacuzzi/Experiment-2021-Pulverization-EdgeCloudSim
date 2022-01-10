@@ -1,5 +1,5 @@
-function [] = plotResults(baseDir, folderNum, baseFileName, withError, outputDir)
-    plotAvgFailedTask(baseDir, folderNum, baseFileName, withError, outputDir);
+function [] = plotResults(baseDir, folderNum, baseFileName, withError, outputDir, yLimits)
+    plotAvgFailedTask(baseDir, folderNum, baseFileName, withError, outputDir, yLimits);
     
     plotAvgNetworkDelay(baseDir, folderNum, baseFileName, withError, outputDir);
     

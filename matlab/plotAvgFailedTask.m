@@ -1,7 +1,9 @@
-function [] = plotAvgFailedTask(baseDir, folderNum, baseFileName, withError, outputDir)
+function [] = plotAvgFailedTask(baseDir, folderNum, baseFileName, withError, outputDir, yLimits)
 
     if (!withError) 
-      plotFailedTask(1, 3, 2, 'Failed Tasks (%)', 'ALL_APPS', 'percentage_for_all', withError, baseDir, folderNum, strcat(baseFileName, 'Failed_Tasks_Mix'), outputDir);
+      for limit=yLimits
+        plotFailedTask(1, 3, 2, limit, 'Failed Tasks (%)', 'ALL_APPS', 'percentage_for_all', withError, baseDir, folderNum, strcat(baseFileName, 'Failed_Tasks_Mix_', num2str(limit)), outputDir);
+      end
     end
     plotGenericResult(1, 2, 'Failed Tasks (%)', 'ALL_APPS', 'percentage_for_all', withError, baseDir, folderNum, strcat(baseFileName, 'Failed_Tasks'), outputDir);
     

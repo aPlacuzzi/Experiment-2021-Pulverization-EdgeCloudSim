@@ -1,4 +1,4 @@
-function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType, calculatePercentage, withError, folderPath, folderNum, baseFileName, outputDir)
+function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLimit, yLabel, appType, calculatePercentage, withError, folderPath, folderNum, baseFileName, outputDir)
     numOfSimulations = getConfiguration(2);
     startOfMobileDeviceLoop = getConfiguration(3);
     stepOfMobileDeviceLoop = getConfiguration(4);
@@ -102,7 +102,7 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
     set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
     ylabel(yLabel);
     set(gca,'XLim',[startOfMobileDeviceLoop, endOfMobileDeviceLoop]);
-	set(gca,'YLim',[0, 100.0]);
+	set(gca,'YLim',[0, yLimit]);
     
     set(get(gca,'Xlabel'),'FontSize',12)
     set(get(gca,'Ylabel'),'FontSize',12)
