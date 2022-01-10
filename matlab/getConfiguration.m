@@ -20,7 +20,7 @@ function [ret_val] = getConfiguration(argType)
     elseif(argType == 8)
         ret_val = {'1-tier','2-tier','2-tier with EO'};
     elseif(argType == 9)
-        ret_val=[10 3 12 12]; %position of figure
+        ret_val=[10 3 12 6]; %position of figure
     elseif(argType == 10)
         ret_val = 'Number of Mobile Devices'; %Common text for x axis
     elseif(argType == 11)

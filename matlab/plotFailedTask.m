@@ -60,7 +60,7 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
     set(0,'DefaultTextFontName','Times New Roman');
     set(0,'DefaultAxesFontSize',10);
     set(0,'DefaultTextFontSize',12);
-    
+
     for i=1:1:numOfMobileDevices
         xIndex=startOfMobileDeviceLoop+((i-1)*stepOfMobileDeviceLoop);
         
@@ -97,7 +97,6 @@ function [] = plotFailedTask(rowOfset1, rowOfset2, columnOfset, yLabel, appType,
     end
 
     hold off;
-    axis square
     xlabel(getConfiguration(10));
     set(gca,'XTick', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
     set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);

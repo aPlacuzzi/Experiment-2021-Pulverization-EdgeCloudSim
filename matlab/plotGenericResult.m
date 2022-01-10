@@ -88,7 +88,6 @@ function [] = plotGenericResult(rowOfset, columnOfset, yLabel, appType, calculat
     end
 
     hold off;
-    axis square
     xlabel(getConfiguration(10));
     set(gca,'XTick', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
     set(gca,'XTickLabel', (startOfMobileDeviceLoop*xTickLabelCoefficient):50:endOfMobileDeviceLoop);
